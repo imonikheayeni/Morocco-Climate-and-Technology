@@ -86,3 +86,51 @@ Cite the original sources, not this repo.
 - **HDX / OCHA CODs**: data.humdata.org. Mostly CC BY-IGO.
 - **Natural Earth**: naturalearthdata.com. Public domain.
 For reproducibility, record the date you downloaded. CHIRPS, World Bank, and OSM URLs always pull the latest available. `download_log.txt` timestamps each dataset automatically.
+## Machine Learning Analysis — Regional Vulnerability Typologies
+ 
+The one-dimensional CTVI ranking collapses heterogeneous vulnerability profiles onto a single axis. Two regions can earn the same score for entirely different reasons. The ML component addresses this by classifying Morocco's 12 administrative regions into **four distinct vulnerability typologies** based on the multidimensional shape of their indicator profiles, not their composite score.
+ 
+### Method
+ 
+| Step | Detail |
+|------|--------|
+| **Pre-processing** | 10 regional indicators, min-max normalised to [0,1] (from `Regional_Normalized` sheet) |
+| **Dimensionality reduction** | PCA — 2 components retained, covering **86.7% of cross-regional variance** |
+| **Primary clustering** | K-Means (k=4, 200 initialisations, `random_state=42`) |
+| **Validation** | Ward hierarchical clustering + silhouette analysis across k=2…6 |
+| **Interpretation** | Random Forest permutation importance on the national CTVI time series (2000–2024) |
+ 
+k=4 is preferred over the silhouette-optimal k=5, which isolates a single region (Drâa-Tafilalet) — a valid outlier flag but not a policy-actionable typology.
+ 
+### Results
+ 
+| Typology | Regions | Mean CTVI | Profile |
+|----------|---------|-----------|---------|
+| **T1: Resilient North** | Casablanca-Settat, Rabat-Salé-Kénitra | 0.37 | Low climate exposure, strongest tech penetration, high GDP |
+| **T2: Mixed-Profile Interior** | Tanger-Tétouan, Fès-Meknès, Oriental, Béni Mellal-Khénifra | 0.49 | Moderate across all pillars; most internally diverse cluster |
+| **T3: Climate-Stressed South** | Laâyoune-Sakia El Hamra, Dakhla-Oued Ed-Dahab | 0.65 | Extreme heat and water stress, but buffered by high GDP/capita |
+| **T4: Extreme Aridity Frontier** | Marrakech-Safi, Souss-Massa, Guelmim-Oued Noun, Drâa-Tafilalet | 0.68 | High vulnerability across all four pillars — primary target for adaptation funding |
+ 
+**Validation:** silhouette score = 0.41 (>0.25 threshold), Ward ARI = 0.40 — both above the conventional thresholds for non-random structure. The null hypothesis (no natural groupings) is rejected.
+ 
+**Key insight:** Marrakech-Safi (rank 4) and Dakhla-Oued Ed-Dahab (rank 5) score within 0.011 of each other on the composite CTVI but land in different typologies with opposite policy implications — illustrating the practical value of the typology over the linear ranking alone.
+ 
+### Outputs
+ 
+Running `Morocco_CTVI_ML_Pipeline.ipynb` produces:
+ 
+```
+fig1_k_selection.png        — Elbow & silhouette plots
+fig2_pca_clusters.png       — Four typologies in PCA space
+fig3_dendrogram.png         — Ward hierarchical dendrogram
+fig4_cluster_profile.png    — Indicator heatmap by typology
+fig5_pc1_loadings.png       — Data-driven indicator weights (PC1)
+fig6_rf_importance.png      — Random Forest permutation importance
+cluster_assignments.csv     — Region → typology mapping
+cluster_profiles.csv        — Mean normalised scores per typology
+pca_loadings.csv            — PCA component loadings
+rf_feature_importance.csv   — RF indicator importance ranking
+```
+ 
+All results are fully reproducible with `random_state=42`.
+ 
