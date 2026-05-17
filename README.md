@@ -2,22 +2,18 @@
 
 
 
-# Data
+## Dataset Downloader
  
-Datasets used in the Morocco climate exposure and technology access analysis. All downloads are handled by `morocco_dataset_downloader.py` (CLI) or `morocco_dataset_downloader.ipynb` (Colab).
+Datasets used in the Morocco climate exposure and technology access analysis. All downloads are handled by  `morocco_dataset_downloader.ipynb` (Colab).
  
-## Running it
+### Running it
  
-In Colab, open the notebook, run the install cell, set `TARGETS` in the config cell, and run the rest. Locally:
+In Colab, open the notebook, run the install cell, set `TARGETS` in the config cell, and run the rest.
  
-```bash
-pip install -r requirements.txt
-python morocco_dataset_downloader.py --all
-```
+
+
  
-Other useful flags: `--group climate|tech|admin`, `--ids C1 T4 ADMIN`, `--year-start 2015 --year-end 2023`, `--summary-only`.
- 
-## Datasets
+### Datasets
  
 **Climate**
  
@@ -38,7 +34,7 @@ Other useful flags: `--group climate|tech|admin`, `--ids C1 T4 ADMIN`, `--year-s
  
 **Boundaries:** GADM v4.1 (levels 0–3), HDX/OCHA CODs, Natural Earth 10m.
  
-## Output layout
+### Output layout
  
 ```
 morocco_data/
@@ -48,7 +44,7 @@ morocco_data/
 └── download_log.txt
 ```
  
-## What needs auth or manual work
+### What needs auth or manual work
  
 **MODIS (C2, C3)** isn't pulled directly. The pipeline writes two helper scripts to the C2/C3 folders: one for NASA Earthdata (needs an account and `~/.netrc`), one for Google Earth Engine (`pip install earthengine-api && earthengine authenticate`). GEE is easier; it exports annual composites straight to your Drive. Morocco sits in MODIS tiles h17v05/v06 and h18v05/v06.
  
@@ -57,11 +53,11 @@ morocco_data/
 - Electrification: HCP RGPH 2014, https://www.hcp.ma/
 - Telecom: ANRT annual reports, https://www.anrt.ma/publications/rapport-annuel
 - Detailed telecom: ITU DataHub, https://datahub.itu.int/
-## Disk and time
+### Disk and time
  
-A full pipeline run is 2–3 GB and 30–60 min on broadband, dominated by CHIRPS (~108 monthly TIFFs) and the Aridity Index globals. On Colab's free tier, either narrow `YEAR_START`/`YEAR_END` or mount Drive so downloads survive a runtime restart.
+A full pipeline run is 2–3 GB and 30–60 min on broadband, dominated by CHIRPS ( about 108 monthly TIFFs) and the Aridity Index globals. On Colab's free tier, either narrow `YEAR_START`/`YEAR_END` or mount Drive so downloads survive a runtime restart.
  
-## Things to know before using the data
+### Things to know before using the data
  
 Resolutions don't match (CHIRPS 5 km, LST 1 km, NDVI 500 m). Resample to a common grid before any pixel-wise comparison; the downloader doesn't do this.
  
@@ -73,9 +69,9 @@ MODIS LST has quality flags (`LST_QC`); the default GEE script computes plain an
  
 World Bank indicators usually lag 1–2 years.
  
-## Citations and licenses
+### Citations and licenses
  
-Cite the original sources, not this repo.
+
  
 - **CHIRPS**: Funk et al. (2015), *Scientific Data* 2:150066. Public domain.
 - **MODIS MOD11A2 / MOD13A1**: Wan et al. (2021), Didan (2021). NASA LP DAAC. Public use.
@@ -86,6 +82,9 @@ Cite the original sources, not this repo.
 - **HDX / OCHA CODs**: data.humdata.org. Mostly CC BY-IGO.
 - **Natural Earth**: naturalearthdata.com. Public domain.
 For reproducibility, record the date you downloaded. CHIRPS, World Bank, and OSM URLs always pull the latest available. `download_log.txt` timestamps each dataset automatically.
+
+
+
 ## Machine Learning Analysis — Regional Vulnerability Typologies
  
 The one-dimensional CTVI ranking collapses heterogeneous vulnerability profiles onto a single axis. Two regions can earn the same score for entirely different reasons. The ML component addresses this by classifying Morocco's 12 administrative regions into **four distinct vulnerability typologies** based on the multidimensional shape of their indicator profiles, not their composite score.
@@ -115,7 +114,7 @@ k=4 is preferred over the silhouette-optimal k=5, which isolates a single region
  
 **Key insight:** Marrakech-Safi (rank 4) and Dakhla-Oued Ed-Dahab (rank 5) score within 0.011 of each other on the composite CTVI but land in different typologies with opposite policy implications — illustrating the practical value of the typology over the linear ranking alone.
  
-### Outputs
+#### Outputs
  
 Running `Morocco_CTVI_ML_Pipeline.ipynb` produces:
  
