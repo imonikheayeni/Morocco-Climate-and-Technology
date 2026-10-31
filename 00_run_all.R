@@ -1,54 +1,43 @@
 # =============================================================================
-# Morocco Climate-Technology Vulnerability Index (CTVI)
-# Master runner
-# -----------------------------------------------------------------------------
-# Runs the full pipeline in order. Each script is sourced exactly once.
-#
-# HOW TO RUN
-#   1. Set `root_dir` below to the folder that contains the R/, 01_raw/, ...
-#      sub-folders (the project root). Use FORWARD slashes, even on Windows.
-#   2. Open this file in RStudio and click "Source", or run:
-#        source("R/00_run_all.R")
-#
-# Author: Imonikhe Ayeni  |  Pipeline rewritten for ADM2 + ML + hotspots
+# 00_run_all.R
+# Runs the revised Climate-Technology Vulnerability Mapping pipeline in order.
+# Place this file and scripts 01-05 in the project root, then run:
+#   source("00_run_all.R")
 # =============================================================================
-getwd()
-# ---- 0. Project root --------------------------------------------------------
-# EDIT THIS ONE LINE to point at your project root, then never touch paths again.
-root_dir <- "C:/Users/User/Downloads/Morocco_CTVI_data_sourcing_pack"
 
-# Fallback: if the line above does not exist on this machine, use the current
-# working directory instead (handy when a collaborator clones the repo).
-if (!dir.exists(root_dir)) {
-  message("root_dir not found, falling back to getwd(): ", getwd())
-  root_dir <- getwd()
+root_dir <- getwd()
+
+scripts <- c(
+  "01_setup.R",
+  "02_download_sources.R",
+  "03_clean_qc_build_ml_dataset.R",
+  "04_model_index_typology.R",
+  "05_hotspots_maps_reporting.R"
+)
+
+missing_scripts <- scripts[!file.exists(file.path(root_dir, scripts))]
+if (length(missing_scripts) > 0) {
+  stop(
+    "The following scripts are missing from the project root: ",
+    paste(missing_scripts, collapse = ", "),
+    call. = FALSE
+  )
 }
-setwd(root_dir)
-message("Project root: ", root_dir)
 
-# ---- 1. Run the pipeline ----------------------------------------------------
-source(file.path(root_dir, "01_setup.R"))                  # folders, pkgs, params
-source(file.path(root_dir, "02_download_sources.R"))       # raw downloads
-source(file.path(root_dir, "03_clean_qc_build_ml_dataset.R")) # ADM2 feature build
-source(file.path(root_dir, "04_model_and_index.R"))        # PCA / clustering / RF
-source(file.path(root_dir, "05_hotspots_and_maps.R"))      # Gi*, LISA, maps
+pipeline_started <- Sys.time()
+message("CTVI pipeline started: ", pipeline_started)
 
+for (script in scripts) {
+  message("\n", paste(rep("=", 78), collapse = ""))
+  message("Running ", script)
+  message(paste(rep("=", 78), collapse = ""))
+  source(file.path(root_dir, script), local = globalenv(), echo = FALSE)
+}
 
-message("\n=============================================================")
-message("Pipeline complete. Outputs:")
-message("- 01_raw/                original downloaded source files")
-message("- 02_intermediate/       harmonised climate / spatial / socio-tech data")
-message("- 03_processed/ml_ready/ modelling tables, index, clusters")
-message("- 04_maps/               choropleth, typology and HOTSPOT maps")
-message("- 05_logs/               download log, missingness & feasibility notes")
-message("=============================================================")
-
-### sanity check
-# readr::read_csv(file.path(root_dir, "03_processed", "ml_ready",
-#                           "morocco_ctvi_adm2_features_imputed.csv")) |>
-#   dplyr::select(adm2_name, population, population_density_per_km2) |> head()
-# ### whre hotspot landed
-# readr::read_csv(file.path(root_dir, "03_processed", "ml_ready",
-#                           "morocco_ctvi_adm2_hotspots.csv")) |>
-#   dplyr::arrange(dplyr::desc(ctvi_score)) |>
-#   dplyr::select(adm2_name, adm1_name, ctvi_score, hotspot, lisa) |> head(10)
+pipeline_finished <- Sys.time()
+message("\nCTVI pipeline completed: ", pipeline_finished)
+message(
+  "Elapsed time: ",
+  round(as.numeric(difftime(pipeline_finished, pipeline_started, units = "mins")), 1),
+  " minutes"
+)
