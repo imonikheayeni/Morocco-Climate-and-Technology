@@ -55,6 +55,7 @@ write_utf8 <- function(lines, file) {
 f3 <- function(x) formatC(x, format = "f", digits = 3)
 f2 <- function(x) formatC(x, format = "f", digits = 2)
 f1 <- function(x) formatC(x, format = "f", digits = 1)
+m1 <- function(x) paste0("$", f1(x), "$")  # signed value in running text
 fint <- function(x) formatC(round(x), format = "d", big.mark = ",")
 fp <- function(p) {
   if (!is.finite(p)) return("$p$ not available")
@@ -73,7 +74,25 @@ latex_list <- function(x) {
   paste0(paste(head(x, -1), collapse = ", "), " and ", tail(x, 1))
 }
 latex_escape <- function(x) gsub("([&%#_])", "\\\\\\1", x)
-region_tex <- function(x) gsub("-", "--", x, fixed = TRUE)
+# Region names as written in the manuscript (en dash between components).
+region_display <- c(
+  "B\u00e9ni Mellal-Kh\u00e9nifra" = "B\u00e9ni Mellal--Kh\u00e9nifra",
+  "Casablanca-Settat" = "Casablanca--Settat",
+  "Dakhla-Oued Ed-Dahab" = "Dakhla--Oued Ed-Dahab",
+  "Dr\u00e2a-Tafilalet" = "Dr\u00e2a--Tafilalet",
+  "Fez-Meknes" = "F\u00e8s--Mekn\u00e8s",
+  "Guelmim-Oued Noun" = "Guelmim--Oued Noun",
+  "La\u00e2youne-Sakia El Hamra" = "La\u00e2youne--Sakia El Hamra",
+  "Marrakech-Safi" = "Marrakech--Safi",
+  "Oriental" = "Oriental",
+  "Rabat-Sal\u00e9-Kenitra" = "Rabat--Sal\u00e9--K\u00e9nitra",
+  "Souss-Massa" = "Souss--Massa",
+  "Tangier-Tetouan-Al Hoceima" = "Tangier--T\u00e9touan--Al Hoceima"
+)
+region_tex <- function(x) {
+  out <- unname(region_display[enc2utf8(as.character(x))])
+  ifelse(is.na(out), sub("-", "--", x, fixed = TRUE), out)
+}
 format_date <- function(x) {
   d <- as.Date(substr(as.character(x), 1, 10))
   ifelse(is.na(d), "date not recorded", format(d, "%e %B %Y") |> trimws())
@@ -227,6 +246,86 @@ lisa_perm_sentence <- if (lisa_perm_n == 0) {
 # ---- Sensitivity agreement -----------------------------------------------------
 agree <- function(id, col) first_or_na(agreement[[col]][agreement$variant_id == id])
 
+# ---- Composed sentences (wording follows the results) --------------------------
+cap1 <- function(x) paste0(toupper(substr(x, 1, 1)), substring(x, 2))
+
+pop_screen_sentence <- if (nrow(pop_flagged) == 0) {
+  "no unit was flagged once the two rasters were combined (Supplementary Table S2)"
+} else {
+  paste0(
+    nrow(pop_flagged), " unit", ifelse(nrow(pop_flagged) == 1, "", "s"),
+    " remained below this threshold after the two rasters were combined (",
+    latex_list(pop_flagged$display_name), "; Supplementary Table S2)"
+  )
+}
+
+access_jrc_n <- sum(access_dist$jrc_treatment_suggested, na.rm = TRUE)
+skew_descriptor <- if (min(access_dist$skewness) > 1) {
+  "strongly right-skewed"
+} else if (min(access_dist$skewness) > 0.5) {
+  "right-skewed"
+} else {
+  "only moderately skewed"
+}
+access_skew_sentence <- paste0(
+  "The three access densities were ", skew_descriptor,
+  " (sample skewness ", m1(min(access_dist$skewness)), " to ", m1(max(access_dist$skewness)),
+  "; excess kurtosis ", m1(min(access_dist$excess_kurtosis)), " to ",
+  m1(max(access_dist$excess_kurtosis)), "), and ",
+  dplyr::case_when(
+    access_jrc_n == 3 ~ "all three exceeded",
+    access_jrc_n == 0 ~ "none exceeded",
+    TRUE ~ paste(number_word(access_jrc_n), "of the three exceeded")
+  ),
+  " the thresholds at which JRC-COIN guidance suggests considering a transformation",
+  " (absolute skewness above 2 and kurtosis above 3.5)"
+)
+
+moran_phrase <- function(i, p) {
+  paste0("$I=", f3(i), "$, ", fp(p))
+}
+moran_sig <- c(moran_q$p_value, moran_k$p_value) < spatial_alpha
+moran_pos <- c(moran_q$moran_i, moran_k$moran_i) > 0
+moran_sentence <- if (all(moran_sig & moran_pos)) {
+  paste0(
+    "Global Moran's I indicated significant positive spatial autocorrelation in the CTVI under both queen contiguity (",
+    moran_phrase(moran_q$moran_i, moran_q$p_value), ") and $k$-nearest-neighbour weights (",
+    moran_phrase(moran_k$moran_i, moran_k$p_value), ")."
+  )
+} else {
+  paste0(
+    "Global Moran's I for the CTVI was ", moran_phrase(moran_q$moran_i, moran_q$p_value),
+    " under queen contiguity and ", moran_phrase(moran_k$moran_i, moran_k$p_value),
+    " under $k$-nearest-neighbour weights."
+  )
+}
+
+priority_sentence <- paste0(
+  "The ten highest priority scores were recorded in ", latex_list(priority_top$display_name),
+  if (nrow(priority_regions) > 0) {
+    paste0(", which lie mainly in the ", latex_list(region_tex(priority_regions$adm1_name)),
+           " region", ifelse(nrow(priority_regions) == 1, "", "s"))
+  } else "",
+  "; ", number_word(priority_top_hot), " of these ten units ",
+  ifelse(priority_top_hot == 1, "is", "are"), " also Gi* hot spots. ",
+  cap1(number_word(nrow(esh_units))), " unit", ifelse(nrow(esh_units) == 1, " was", "s were"),
+  " covered partly or wholly by the separate WorldPop raster for the area south of 27$^{\\circ}$40$'$N; ",
+  "their extracted totals range from ", fint(min(esh_units$population)), " to ",
+  fint(max(esh_units$population)), " people (Supplementary Table S2)."
+)
+
+log_typ_n <- agree("log_access", "typology_agreement_n")
+log_sentence <- paste0(
+  "Log-transforming the access densities reduced their skewness to between ",
+  m1(min(access_dist$skewness_log1p)), " and ", m1(max(access_dist$skewness_log1p)),
+  " and gave a Spearman correlation of ", f3(agree("log_access", "spearman_rho")),
+  " with the primary ranking; ", agree("log_access", "top10_retained"),
+  " of the ten highest-ranked units remained in the top ten, and the median-split typology was unchanged for ",
+  ifelse(log_typ_n == nrow(idx), paste0("all ", nrow(idx), " units"),
+         paste0(log_typ_n, " of the ", nrow(idx), " units")),
+  " (Supplementary Table S3a)."
+)
+
 # ---- Write values.tex ----------------------------------------------------------
 macro <- function(name, value) {
   paste0("\\newcommand{\\", name, "}{", value, "}")
@@ -280,6 +379,11 @@ values <- c(
   macro("valKnnSentence", knn_sentence),
   macro("valLisaPermSentence", lisa_perm_sentence),
   macro("valLisaPermutations", fint(sens_value("lisa_permutations"))),
+  macro("valPopScreenSentence", pop_screen_sentence),
+  macro("valAccessSkewSentence", access_skew_sentence),
+  macro("valMoranSentence", moran_sentence),
+  macro("valPrioritySentence", priority_sentence),
+  macro("valLogSentence", log_sentence),
   macro("valRfRsq", f3(diagnostics$value[diagnostics$diagnostic == "rf_oob_r2"])),
   macro("valKmeansK", diagnostics$value[diagnostics$diagnostic == "kmeans_best_k"])
 )
@@ -422,6 +526,7 @@ supp <- c(
   "\\usepackage{booktabs,longtable,array}",
   "\\usepackage[hidelinks]{hyperref}",
   "\\renewcommand{\\arraystretch}{1.05}",
+  "\\setlength{\\LTcapwidth}{\\textwidth}",
   "\\begin{document}",
   "\\begin{center}{\\large\\bfseries Supplementary material}\\\\[4pt]",
   "Mapping Climate--Technology Vulnerability across Morocco: An Open-Data Provincial Index, Spatial Typologies, and Urban--Rural Inequalities\\end{center}",
@@ -430,7 +535,7 @@ supp <- c(
   "",
   "\\scriptsize",
   "\\begin{longtable}{@{}r>{\\raggedright\\arraybackslash}p{2.9cm}>{\\raggedright\\arraybackslash}p{3.3cm}llrrrrllr@{}}",
-  "\\caption*{\\normalsize\\textbf{Supplementary Table S1.} ADM2 results and analytical environment lookup, ordered by CTVI rank. Environment: primary (name anchors plus population-density percentiles); Contiguity: geographic check (Section 3.10). Typology: CV, Critical vulnerability; CA, Climate-exposed adaptive potential; TD, Technology/service development gap; RR, Relative resilience. Gi*: Benjamini--Hochberg-adjusted class (n.s., not significant). Population: WorldPop 2020, 1 km, UN-adjusted (MAR and ESH rasters).}\\\\",
+  "\\caption*{\\normalsize\\textbf{Supplementary Table S1.} ADM2 results and analytical environment lookup, ordered by CTVI rank. Environment: primary (name anchors plus population-density percentiles); Contiguity: geographic check described in the sensitivity analysis of the main text. Typology: CV, Critical vulnerability; CA, Climate-exposed adaptive potential; TD, Technology/service development gap; RR, Relative resilience. Gi*: Benjamini--Hochberg-adjusted class (n.s., not significant). Population: WorldPop 2020, 1 km, UN-adjusted (MAR and ESH rasters).}\\\\",
   "\\toprule",
   "Rank & Unit & Region & Environment & Contiguity & Population & CE & TG & CTVI & Typ. & Gi* & Priority \\\\",
   "\\midrule\\endfirsthead",
@@ -622,7 +727,18 @@ expected_sets <- dplyr::bind_rows(
   set_check("New-analysis narrative: fringe contrast reproduced under contiguity", "Sec 4.4, 5.2",
             "TRUE", as.character(geo_pattern_reproduced)),
   set_check("No population flags after combining rasters", "Sec 3.3, 4.6",
-            "0", as.character(nrow(pop_flagged)))
+            "0", as.character(nrow(pop_flagged))),
+  set_check("Access densities strongly right-skewed (skewness > 1)", "Sec 3.3, 4.2",
+            "TRUE", as.character(min(access_dist$skewness) > 1)),
+  set_check("Name anchors: 8 urban-core and 7 peri-urban", "Sec 3.6",
+            "8 urban-core; 7 peri-urban",
+            paste0(sum(idx$environment_classification_basis == "Named urban-core anchor"),
+                   " urban-core; ",
+                   sum(idx$environment_classification_basis == "Named peri-urban anchor"),
+                   " peri-urban")),
+  set_check("Peri-urban units assigned by the density band", "Sec 3.6", "27",
+            as.character(sum(idx$environment_type == peri &
+                               idx$environment_classification_basis == "Intermediate population-density band")))
 )
 
 consistency <- dplyr::bind_rows(

@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use this code or data, please cite the archived release."
+title: "Code and derived data for: Mapping Climate-Technology Vulnerability across Morocco"
+version: 1.0.0
+license: MIT
+repository-code: "https://github.com/imonikheayeni/morocco-climate-and-technology"
+authors:
+  - family-names: Ayeni
+    given-names: Imonikhe
+    affiliation: "Cardiff School of Technologies, Cardiff Metropolitan University"
+  - family-names: Namwila
+    given-names: Mwaka
+    affiliation: "Cardiff School of Technologies, Cardiff Metropolitan University"
+  - family-names: Iraqi
+    given-names: Youssef
+    affiliation: "College of Computing, Mohammed VI Polytechnic University (UM6P)"
+  - family-names: Damaj
+    given-names: Issam
+    affiliation: "Cardiff School of Technologies, Cardiff Metropolitan University"
+keywords:
+  - climate vulnerability
+  - composite indicators
+  - Morocco
+  - open geospatial data
+  - spatial statistics

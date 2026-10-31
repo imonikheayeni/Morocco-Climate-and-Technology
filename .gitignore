@@ -1,0 +1,25 @@
+# Raw downloads are re-created by 02_download_sources.R (keep pinned boundaries)
+01_raw/*
+!01_raw/boundaries/
+01_raw/boundaries/*
+!01_raw/boundaries/geoboundaries_MAR_ADM1.geojson
+!01_raw/boundaries/geoboundaries_MAR_ADM2.geojson
+
+# Large or regenerable intermediates and working maps
+02_intermediate/spatial/*.shp
+02_intermediate/spatial/*.shx
+02_intermediate/spatial/*.dbf
+02_intermediate/spatial/*.prj
+02_intermediate/spatial/*.cpg
+04_maps/
+
+# R and LaTeX working files
+.Rhistory
+.RData
+.Rproj.user/
+*.aux
+*.log
+*.out
+*.synctex.gz
+*.fls
+*.fdb_latexmk
