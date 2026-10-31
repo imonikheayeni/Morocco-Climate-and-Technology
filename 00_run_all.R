@@ -1,8 +1,13 @@
 # =============================================================================
 # 00_run_all.R
-# Runs the revised Climate-Technology Vulnerability Mapping pipeline in order.
-# Place this file and scripts 01-05 in the project root, then run:
+# Runs the Climate-Technology Vulnerability Index (CTVI) pipeline for Morocco.
+#
+# Usage: open the project folder (the folder containing this file) in RStudio
+# or set it as the working directory, then run:
 #   source("00_run_all.R")
+#
+# Outputs used in the manuscript are written to 07_manuscript/. Check
+# 07_manuscript/consistency_report.csv after every run.
 # =============================================================================
 
 root_dir <- getwd()
@@ -12,7 +17,9 @@ scripts <- c(
   "02_download_sources.R",
   "03_clean_qc_build_ml_dataset.R",
   "04_model_index_typology.R",
-  "05_hotspots_maps_reporting.R"
+  "05_hotspots_maps_reporting.R",
+  "06_publication_figures.R",
+  "07_manuscript_values.R"
 )
 
 missing_scripts <- scripts[!file.exists(file.path(root_dir, scripts))]
@@ -33,6 +40,11 @@ for (script in scripts) {
   message(paste(rep("=", 78), collapse = ""))
   source(file.path(root_dir, script), local = globalenv(), echo = FALSE)
 }
+
+writeLines(
+  capture.output(sessionInfo()),
+  file.path(path_logs, "session_info.txt")
+)
 
 pipeline_finished <- Sys.time()
 message("\nCTVI pipeline completed: ", pipeline_finished)

@@ -1,18 +1,21 @@
 # =============================================================================
-# 04_model_index_typology_revised.R
-# Constructs the primary transparent CTVI, sensitivity indices, four resilience
-# typologies, smart-city/urban-edge/rural comparisons and publication outputs.
+# 04_model_index_typology.R
+# Constructs the primary transparent CTVI, sensitivity indices, the four
+# climate-technology typologies and the urban-core / peri-urban /
+# rural-lower-density comparisons.
 #
 # Primary method:
-#   * direction-align and min-max scale selected indicators;
-#   * equal weight within climate and technology domains;
-#   * equal weight for the two domain scores.
+#   * direction-align and min-max scale the selected indicators;
+#   * equal weights within the climate and technology domains;
+#   * equal weights for the two domain scores.
 #
 # Sensitivity analyses:
 #   * robust 5th-95th percentile scaling;
+#   * log-transformed access densities (log(1 + x) before min-max scaling);
 #   * PCA-derived index;
 #   * data-driven 3-4 cluster solution;
-#   * Random Forest index-reconstruction sensitivity diagnostic.
+#   * Random Forest index-reconstruction diagnostic;
+#   * contiguity-based (geographic) definition of peri-urban units.
 # =============================================================================
 
 feature_file <- file.path(path_ml, "morocco_ctvi_adm2_features_imputed.csv")
@@ -133,6 +136,7 @@ aligned <- ml |>
   )
 
 aligned_robust <- aligned
+aligned_log <- aligned
 for (variable in model_vars) {
   direction <- indicator_direction[[variable]]
   if (is.null(direction) || is.na(direction)) {
@@ -140,7 +144,35 @@ for (variable in model_vars) {
   }
   aligned[[variable]] <- scale_01(direction * ml[[variable]])
   aligned_robust[[variable]] <- robust_scale_01(direction * ml[[variable]])
+  # Log-transformed variant: access densities only (all >= 0).
+  aligned_log[[variable]] <- if (variable %in% technology_vars) {
+    scale_01(direction * log1p(ml[[variable]]))
+  } else {
+    scale_01(direction * ml[[variable]])
+  }
 }
+
+# Distribution diagnostics for the raw indicators (JRC-COIN rule of thumb:
+# consider treatment if |skewness| > 2 and kurtosis > 3.5).
+indicator_distribution <- tibble::tibble(variable = model_vars) |>
+  dplyr::mutate(
+    domain = dplyr::if_else(variable %in% climate_vars, "climate", "technology"),
+    label = unname(indicator_labels[variable]),
+    minimum = purrr::map_dbl(variable, ~ min(ml[[.x]], na.rm = TRUE)),
+    median = purrr::map_dbl(variable, ~ stats::median(ml[[.x]], na.rm = TRUE)),
+    maximum = purrr::map_dbl(variable, ~ max(ml[[.x]], na.rm = TRUE)),
+    skewness = purrr::map_dbl(variable, ~ sample_skewness(ml[[.x]])),
+    excess_kurtosis = purrr::map_dbl(variable, ~ sample_excess_kurtosis(ml[[.x]])),
+    skewness_log1p = purrr::map_dbl(
+      variable,
+      ~ if (.x %in% technology_vars) sample_skewness(log1p(ml[[.x]])) else NA_real_
+    ),
+    jrc_treatment_suggested = abs(skewness) > 2 & excess_kurtosis > 3.5
+  )
+safe_write_csv(
+  indicator_distribution,
+  file.path(path_tables, "indicator_distribution_diagnostics.csv")
+)
 
 if (any(vapply(aligned[model_vars], function(x) all(is.na(x)), logical(1)))) {
   stop("At least one aligned indicator became entirely missing.", call. = FALSE)
@@ -148,6 +180,7 @@ if (any(vapply(aligned[model_vars], function(x) all(is.na(x)), logical(1)))) {
 
 X <- as.matrix(aligned[, model_vars])
 X_robust <- as.matrix(aligned_robust[, model_vars])
+X_log <- as.matrix(aligned_log[, model_vars])
 
 # ---- 3. Primary equal-weight CTVI ------------------------------------------
 climate_exposure_score <- rowMeans(
@@ -173,6 +206,15 @@ technology_gap_robust <- rowMeans(
 )
 ctvi_robust_sensitivity <- rowMeans(
   cbind(climate_exposure_robust, technology_gap_robust),
+  na.rm = TRUE
+)
+
+technology_gap_log <- rowMeans(
+  X_log[, technology_vars, drop = FALSE],
+  na.rm = TRUE
+)
+ctvi_log_access_sensitivity <- rowMeans(
+  cbind(climate_exposure_score, technology_gap_log),
   na.rm = TRUE
 )
 
@@ -247,6 +289,10 @@ index_table <- aligned |>
     ctvi_score = ctvi_equal_weight,
     ctvi_equal_weight = ctvi_equal_weight,
     ctvi_robust_sensitivity = ctvi_robust_sensitivity,
+    ctvi_log_access_sensitivity = ctvi_log_access_sensitivity,
+    technology_gap_log_access = technology_gap_log,
+    climate_exposure_robust = climate_exposure_robust,
+    technology_gap_robust = technology_gap_robust,
     ctvi_pca_sensitivity = ctvi_pca_sensitivity,
     high_climate_exposure = climate_exposure_score >= climate_threshold,
     high_technology_gap = technology_gap_score >= technology_threshold,
@@ -275,12 +321,80 @@ index_table <- aligned |>
     ctvi_rank = dplyr::min_rank(dplyr::desc(ctvi_score)),
     pca_rank = dplyr::min_rank(dplyr::desc(ctvi_pca_sensitivity)),
     robust_rank = dplyr::min_rank(dplyr::desc(ctvi_robust_sensitivity)),
+    log_access_rank = dplyr::min_rank(dplyr::desc(ctvi_log_access_sensitivity)),
     pca_rank_change = pca_rank - ctvi_rank,
     robust_rank_change = robust_rank - ctvi_rank,
-    # Relative priority, not an estimate of people actually affected.
-    population_scaled_log = scale_01(log1p(population)),
-    priority_pop_weighted = ctvi_score * population_scaled_log
+    log_access_rank_change = log_access_rank - ctvi_rank,
+    # Relative priority (manuscript Eq. 7), not an estimate of people affected:
+    # PP = CTVI x log(1 + P) / log(1 + P_max).
+    population_scaled_log = log1p(population) / max(log1p(population), na.rm = TRUE),
+    priority_pop_weighted = ctvi_score * population_scaled_log,
+    priority_rank = dplyr::min_rank(dplyr::desc(priority_pop_weighted))
   )
+
+# ---- 5b. Rank and typology agreement across index constructions ------------
+median_split_typology <- function(ce, tg) {
+  high_ce <- ce >= stats::median(ce, na.rm = TRUE)
+  high_tg <- tg >= stats::median(tg, na.rm = TRUE)
+  dplyr::case_when(
+    high_ce & high_tg ~ "Critical vulnerability",
+    high_ce & !high_tg ~ "Climate-exposed adaptive potential",
+    !high_ce & high_tg ~ "Technology/service development gap",
+    TRUE ~ "Relative resilience"
+  )
+}
+
+top_n_overlap <- function(primary, alternative, n = 10) {
+  primary_top <- order(primary, decreasing = TRUE)[seq_len(n)]
+  alternative_top <- order(alternative, decreasing = TRUE)[seq_len(n)]
+  length(intersect(primary_top, alternative_top))
+}
+
+primary_typology_chr <- as.character(index_table$resilience_typology)
+sensitivity_agreement <- tibble::tibble(
+  variant = c("PCA (first component)", "Robust scaling (5th-95th percentile)",
+              "Log-transformed access densities"),
+  variant_id = c("pca", "robust", "log_access"),
+  spearman_rho = c(
+    stats::cor(ctvi_equal_weight, ctvi_pca_sensitivity, method = "spearman"),
+    stats::cor(ctvi_equal_weight, ctvi_robust_sensitivity, method = "spearman"),
+    stats::cor(ctvi_equal_weight, ctvi_log_access_sensitivity, method = "spearman")
+  ),
+  top10_retained = c(
+    top_n_overlap(ctvi_equal_weight, ctvi_pca_sensitivity),
+    top_n_overlap(ctvi_equal_weight, ctvi_robust_sensitivity),
+    top_n_overlap(ctvi_equal_weight, ctvi_log_access_sensitivity)
+  ),
+  max_abs_rank_change = c(
+    max(abs(index_table$pca_rank_change)),
+    max(abs(index_table$robust_rank_change)),
+    max(abs(index_table$log_access_rank_change))
+  ),
+  typology_agreement_n = c(
+    NA_integer_,
+    sum(median_split_typology(climate_exposure_robust, technology_gap_robust) ==
+          primary_typology_chr),
+    sum(median_split_typology(climate_exposure_score, technology_gap_log) ==
+          primary_typology_chr)
+  ),
+  units = nrow(index_table)
+)
+safe_write_csv(
+  sensitivity_agreement,
+  file.path(path_tables, "sensitivity_rank_and_typology_agreement.csv")
+)
+
+typology_log_access <- median_split_typology(climate_exposure_score, technology_gap_log)
+index_table$resilience_typology_log_access <- typology_log_access
+safe_write_csv(
+  index_table |>
+    dplyr::count(
+      primary = as.character(resilience_typology),
+      log_access = resilience_typology_log_access,
+      name = "n"
+    ),
+  file.path(path_tables, "typology_crosstab_primary_vs_log_access.csv")
+)
 
 # ---- 6. Data-driven 3-4 cluster sensitivity analysis -----------------------
 set.seed(random_seed)
@@ -397,6 +511,14 @@ rf_reconstruction_r2 <- unname(tail(rf_fit$rsq, 1))
 safe_write_csv(
   rf_importance,
   file.path(path_ml, "rf_index_sensitivity_importance.csv")
+)
+safe_write_csv(
+  tibble::tibble(
+    diagnostic = c("rf_oob_r2", "rf_ntree", "kmeans_best_k",
+                   "pca_pc1_variance_explained"),
+    value = c(rf_reconstruction_r2, 500, best_k, as.numeric(pca_variance[[1]]))
+  ),
+  file.path(path_tables, "model_diagnostics.csv")
 )
 
 rf_plot <- rf_importance |>
@@ -583,6 +705,20 @@ pairwise_results <- purrr::map_dfr(
   }
 )
 
+# Rank-biserial effect size for every reported pair.
+pairwise_results <- pairwise_results |>
+  dplyr::mutate(
+    rank_biserial_r = purrr::pmap_dbl(
+      list(measure, as.character(group_1), as.character(group_2)),
+      function(score, g1, g2) {
+        rank_biserial(
+          index_table[[score]][index_table$environment_type == g1],
+          index_table[[score]][index_table$environment_type == g2]
+        )
+      }
+    )
+  )
+
 safe_write_csv(
   kruskal_results,
   file.path(path_tables, "environment_kruskal_wallis_tests.csv")
@@ -591,6 +727,100 @@ safe_write_csv(
   pairwise_results,
   file.path(path_tables, "environment_pairwise_wilcoxon_bh.csv")
 )
+
+# ---- 9b. Geographic (contiguity-based) peri-urban sensitivity ---------------
+# Urban cores are kept as in the primary classification. Peri-urban units are
+# redefined as non-core units sharing a boundary (queen contiguity) with at
+# least one urban-core unit; all other units form the comparison group.
+geo_order <- match(index_table$adm2_id, adm2_map$adm2_id)
+if (anyNA(geo_order)) stop("ADM2 IDs in the index table are missing from the map layer.")
+adm2_geo <- adm2_map[geo_order, ]
+queen_nb_env <- spdep::poly2nb(adm2_geo, queen = TRUE)
+is_core <- as.character(index_table$environment_type) == "Smart city / urban core"
+adjacent_to_core <- vapply(
+  seq_along(queen_nb_env),
+  function(i) any(is_core[setdiff(queen_nb_env[[i]], 0L)]),
+  logical(1)
+)
+
+geographic_levels <- c(
+  "Urban core",
+  "Adjacent to an urban core",
+  "Not adjacent to an urban core"
+)
+index_table$environment_geographic <- factor(
+  dplyr::case_when(
+    is_core ~ "Urban core",
+    adjacent_to_core ~ "Adjacent to an urban core",
+    TRUE ~ "Not adjacent to an urban core"
+  ),
+  levels = geographic_levels
+)
+
+geographic_counts <- index_table |>
+  dplyr::count(environment_geographic, name = "n")
+geographic_crosstab <- index_table |>
+  dplyr::count(
+    primary_environment = as.character(environment_type),
+    environment_geographic,
+    name = "n"
+  )
+
+geographic_summary <- summary_statistics(
+  index_table,
+  "environment_geographic",
+  score_variables
+)
+
+geographic_kruskal <- purrr::map_dfr(
+  score_variables,
+  function(score) {
+    test <- stats::kruskal.test(
+      index_table[[score]],
+      index_table$environment_geographic
+    )
+    tibble::tibble(
+      measure = score,
+      statistic = unname(test$statistic),
+      df = unname(test$parameter),
+      p_value = test$p.value
+    )
+  }
+)
+
+geographic_pairwise <- purrr::map_dfr(
+  score_variables,
+  function(score) {
+    test <- stats::pairwise.wilcox.test(
+      x = index_table[[score]],
+      g = index_table$environment_geographic,
+      p.adjust.method = "BH",
+      exact = FALSE
+    )
+    as.data.frame(as.table(test$p.value)) |>
+      tibble::as_tibble() |>
+      dplyr::rename(group_1 = Var1, group_2 = Var2, p_adjusted = Freq) |>
+      dplyr::filter(!is.na(p_adjusted)) |>
+      dplyr::mutate(measure = score, .before = 1)
+  }
+) |>
+  dplyr::mutate(
+    rank_biserial_r = purrr::pmap_dbl(
+      list(measure, as.character(group_1), as.character(group_2)),
+      function(score, g1, g2) {
+        rank_biserial(
+          index_table[[score]][index_table$environment_geographic == g1],
+          index_table[[score]][index_table$environment_geographic == g2]
+        )
+      }
+    )
+  )
+
+safe_write_csv(geographic_counts, file.path(path_tables, "geographic_environment_counts.csv"))
+safe_write_csv(geographic_crosstab, file.path(path_tables, "geographic_vs_primary_environment.csv"))
+safe_write_csv(geographic_summary, file.path(path_tables, "geographic_environment_statistics_long.csv"))
+safe_write_csv(geographic_kruskal, file.path(path_tables, "geographic_environment_kruskal_wallis.csv"))
+safe_write_csv(geographic_pairwise, file.path(path_tables, "geographic_environment_pairwise_bh.csv"))
 
 # ---- 10. Comparative visuals ------------------------------------------------
 measure_labels <- c(
@@ -610,6 +840,13 @@ comparison_plot_data <- environment_summary_long |>
     ci_low = pmax(0, mean - ci_multiplier * se),
     ci_high = pmin(1, mean + ci_multiplier * se)
   )
+
+safe_write_csv(
+  comparison_plot_data |>
+    dplyr::select(environment_type, measure, n, mean, sd, median, iqr,
+                  minimum, maximum, ci_low, ci_high),
+  file.path(path_tables, "environment_summary_with_ci.csv")
+)
 
 comparison_plot <- ggplot2::ggplot(
   comparison_plot_data,
@@ -640,10 +877,7 @@ comparison_plot <- ggplot2::ggplot(
     x = NULL,
     y = "Mean standardised score",
     fill = NULL,
-    caption = paste(
-      "Environment types are analytical classifications.",
-      "Review the override table before publication."
-    )
+    caption = "Environment types are analytical classifications, not official categories."
   ) +
   ggplot2::theme_minimal(base_size = 11) +
   ggplot2::theme(
@@ -673,6 +907,10 @@ typology_composition <- index_table |>
   dplyr::group_by(environment_type) |>
   dplyr::mutate(percent = n / sum(n) * 100) |>
   dplyr::ungroup()
+safe_write_csv(
+  typology_composition,
+  file.path(path_tables, "typology_composition_by_environment.csv")
+)
 
 typology_composition_plot <- ggplot2::ggplot(
   typology_composition,
@@ -798,10 +1036,10 @@ method_notes <- tibble::tibble(
     "Equal-weight mean of climate exposure and technology-gap sub-indices.",
     paste(technology_vars, collapse = "; "),
     "Four median-split climate-exposure × technology-gap typologies.",
-    "Smart city/urban core, urban edge/peri-urban and rural/lower-density analytical classes; review overrides before publication.",
+    "Urban core, peri-urban and rural/lower-density analytical classes (name anchors plus density percentiles); contiguity-based check in 06_tables.",
     "Sensitivity analysis only, not the headline CTVI.",
     "Index-reconstruction sensitivity diagnostic, not causal driver analysis or external validation.",
-    "Relative CTVI × log-scaled population score; not an estimate of affected people."
+    "CTVI x log(1 + P) / log(1 + P_max); a relative score, not an estimate of affected people."
   )
 )
 write_sheet(wb, "Method notes", method_notes)

@@ -1,14 +1,14 @@
 # =============================================================================
-# 05_hotspots_maps_reporting_revised.R
-# Spatial hotspot analysis, publication maps, bivariate climate-technology map,
-# final typology tables and automatically extracted comparative insights.
+# 05_hotspots_maps_reporting.R
+# Spatial statistics, working maps, summary tables and comparative insights.
 #
-# Main revisions:
-#   * Benjamini-Hochberg control for local Gi* and Local Moran p-values.
-#   * Queen-contiguity primary weights plus 4-nearest-neighbour sensitivity.
-#   * Explicit quantile-class maps with interval labels for close values.
-#   * Four-type resilience map and a 3x3 bivariate climate-technology figure.
-#   * Final tables combine typology, environment and spatial-cluster results.
+#   * Getis-Ord Gi* (queen contiguity, self-included binary weights) with
+#     Benjamini-Hochberg (BH) adjustment of local p-values.
+#   * Local Moran's I (row-standardised queen weights), analytical p-values
+#     with BH adjustment, plus a conditional-permutation check.
+#   * Global Moran's I under queen and k-nearest-neighbour weights.
+#   * Gi* under k-nearest-neighbour weights as a sensitivity check.
+# Publication figures for the manuscript are produced by 06.
 # =============================================================================
 
 map_file <- file.path(path_ml, "morocco_ctvi_adm2_index_map_layer.gpkg")
@@ -42,7 +42,7 @@ queen_weights_with_self <- spdep::nb2listw(
 # 4-nearest-neighbour weights for sensitivity analysis.
 representative_points <- sf::st_point_on_surface(sf::st_transform(m, 6933))
 point_coordinates <- sf::st_coordinates(representative_points)
-knn_k <- min(4L, nrow(m) - 1L)
+knn_k <- min(knn_sensitivity_k, nrow(m) - 1L)
 knn_neighbours <- spdep::knn2nb(
   spdep::knearneigh(point_coordinates, k = knn_k)
 )
@@ -162,6 +162,77 @@ m$lisa <- factor(
     "Low-High (outlier)",
     "Not significant"
   )
+)
+
+# ---- 3b. Sensitivity: Gi* with k-nearest-neighbour weights -----------------
+knn_weights_with_self <- spdep::nb2listw(
+  spdep::include.self(knn_neighbours),
+  style = "B",
+  zero.policy = TRUE
+)
+gi_z_knn <- as.numeric(spdep::localG(x, knn_weights_with_self, zero.policy = TRUE))
+gi_p_fdr_knn <- stats::p.adjust(2 * stats::pnorm(-abs(gi_z_knn)), method = "BH")
+
+classify_gi <- function(z, p_adj) {
+  dplyr::case_when(
+    z > 0 & p_adj <= spatial_alpha ~ "Hot spot (p_adj <= 0.05)",
+    z > 0 & p_adj <= spatial_alpha_exploratory ~ "Hot spot (p_adj <= 0.10)",
+    z < 0 & p_adj <= spatial_alpha ~ "Cold spot (p_adj <= 0.05)",
+    z < 0 & p_adj <= spatial_alpha_exploratory ~ "Cold spot (p_adj <= 0.10)",
+    TRUE ~ "Not significant"
+  )
+}
+m$gi_class_queen <- classify_gi(gi_z, gi_p_fdr)
+m$gi_class_knn <- classify_gi(gi_z_knn, gi_p_fdr_knn)
+m$gi_z_knn <- gi_z_knn
+m$gi_p_fdr_knn <- gi_p_fdr_knn
+
+hot_queen <- m$adm2_id[stringr::str_detect(m$gi_class_queen, "^Hot")]
+hot_knn <- m$adm2_id[stringr::str_detect(m$gi_class_knn, "^Hot")]
+cold_queen <- m$adm2_id[stringr::str_detect(m$gi_class_queen, "^Cold")]
+cold_knn <- m$adm2_id[stringr::str_detect(m$gi_class_knn, "^Cold")]
+
+# ---- 3c. Sensitivity: Local Moran's I with conditional permutation ---------
+set.seed(random_seed)
+local_moran_perm <- spdep::localmoran_perm(
+  x,
+  queen_weights,
+  nsim = lisa_permutations,
+  zero.policy = TRUE
+)
+perm_p_column <- grep("Sim", colnames(local_moran_perm), value = TRUE)
+perm_p_column <- perm_p_column[!grepl("folded", perm_p_column)][1]
+lisa_perm_p_fdr <- stats::p.adjust(local_moran_perm[, perm_p_column], method = "BH")
+m$lisa_perm_p_raw <- local_moran_perm[, perm_p_column]
+m$lisa_perm_p_fdr <- lisa_perm_p_fdr
+
+spatial_sensitivity <- tibble::tibble(
+  check = c(
+    "gi_hot_spots_queen", "gi_hot_spots_knn", "gi_hot_spots_both",
+    "gi_cold_spots_queen", "gi_cold_spots_knn", "gi_cold_spots_both",
+    "lisa_significant_analytical_bh05", "lisa_significant_permutation_bh05",
+    "lisa_significant_permutation_raw05", "knn_k", "lisa_permutations"
+  ),
+  value = c(
+    length(hot_queen), length(hot_knn), length(intersect(hot_queen, hot_knn)),
+    length(cold_queen), length(cold_knn), length(intersect(cold_queen, cold_knn)),
+    sum(lisa_p_fdr <= spatial_alpha, na.rm = TRUE),
+    sum(lisa_perm_p_fdr <= spatial_alpha, na.rm = TRUE),
+    sum(local_moran_perm[, perm_p_column] <= spatial_alpha, na.rm = TRUE),
+    knn_k, lisa_permutations
+  )
+)
+safe_write_csv(
+  spatial_sensitivity,
+  file.path(path_tables, "spatial_statistics_sensitivity.csv")
+)
+safe_write_csv(
+  m |>
+    sf::st_drop_geometry() |>
+    dplyr::select(adm2_id, adm2_name, ctvi_score, gi_z, gi_p_fdr, gi_class_queen,
+                  gi_z_knn, gi_p_fdr_knn, gi_class_knn,
+                  lisa_i, lisa_p_raw, lisa_p_fdr, lisa_perm_p_raw, lisa_perm_p_fdr),
+  file.path(path_tables, "spatial_statistics_by_unit.csv")
 )
 
 # ---- 4. Persist spatial results --------------------------------------------
@@ -565,8 +636,8 @@ save_map(p_technology, "map_04_technology_gap_revised")
 p_environment <- base_map(
   "environment_type",
   "Analytical environment classification",
-  "Smart-city/urban-core, urban-edge/peri-urban and rural/lower-density contexts",
-  "Review and amend the override table before publication."
+  "Urban-core, peri-urban and rural/lower-density analytical classes",
+  "Name anchors plus population-density percentiles; not an official classification."
 ) +
   ggplot2::scale_fill_manual(
     values = environment_colours,

@@ -1,6 +1,8 @@
 # =============================================================================
-# 02_download_sources_revised.R
-# Downloads raw open-access data into 01_raw/ and records every operation.
+# 02_download_sources.R
+# Downloads raw open-access data into 01_raw/ and records every operation in
+# 05_logs/download_log.csv, with MD5 checksums in 05_logs/raw_file_checksums.csv.
+# Downloads are cached: files already present are not downloaded again.
 # =============================================================================
 
 # ---- 1. Administrative boundaries: geoBoundaries ADM1 + ADM2 ---------------
@@ -52,31 +54,41 @@ download_geoboundaries <- function(iso3 = country_iso3, levels = c("ADM1", "ADM2
 }
 download_geoboundaries()
 
+record_checksum(
+  c(adm_path("ADM1"), adm_path("ADM2")),
+  "geoBoundaries gbOpen MAR (pinned in repository)"
+)
+
 # ---- 2. WorldPop gridded population ----------------------------------------
+# Product: Global 1 km population, UN-adjusted, aggregated from 100 m
+# (WorldPop, doi:10.5258/SOTON/WP00671). The country rasters sit under
+# Global_2000_2020_1km_UNadj/<year>/<ISO3>/. Both MAR and ESH are needed to
+# cover all 75 ADM2 units (see worldpop_iso3 in 01_setup.R).
 if (isTRUE(download_worldpop)) {
-  worldpop_url <- glue::glue(
-    "https://data.worldpop.org/GIS/Population/Global_2000_2020/",
-    "{worldpop_year}/{country_iso3}/",
-    "{tolower(country_iso3)}_ppp_{worldpop_year}_1km_Aggregated_UNadj.tif"
-  )
-
-  worldpop_file <- file.path(
-    path_worldpop,
-    glue::glue(
-      "{tolower(country_iso3)}_ppp_{worldpop_year}_1km_UNadj.tif"
+  for (iso in worldpop_iso3) {
+    worldpop_url <- glue::glue(
+      "https://data.worldpop.org/GIS/Population/Global_2000_2020_1km_UNadj/",
+      "{worldpop_year}/{iso}/{worldpop_file_name(iso)}"
     )
-  )
+    worldpop_file <- file.path(path_worldpop, worldpop_file_name(iso))
 
-  ok <- safe_download(worldpop_url, worldpop_file)
-  log_event(
-    "WorldPop population 1 km",
-    "WorldPop",
-    worldpop_url,
-    ifelse(ok, "downloaded", "failed"),
-    "UN-adjusted population grid; aggregated to ADM2 in step 03."
-  )
-
-  if (!ok) warning("WorldPop could not be downloaded; population outputs will be incomplete.")
+    ok <- safe_download(worldpop_url, worldpop_file)
+    log_event(
+      glue::glue("WorldPop population 1 km ({iso})"),
+      "WorldPop",
+      worldpop_url,
+      ifelse(ok, "downloaded", "failed"),
+      "UN-adjusted 1 km population grid; aggregated to ADM2 in step 03."
+    )
+    if (!ok) {
+      stop(
+        "WorldPop raster for ", iso, " could not be downloaded. ",
+        "Download it manually from ", worldpop_url, " into ", path_worldpop,
+        call. = FALSE
+      )
+    }
+    record_checksum(worldpop_file, glue::glue("WorldPop 1 km UNadj {iso} {worldpop_year}"))
+  }
 }
 
 # ---- 3. NASA POWER daily climate at ADM2 representative points -------------
@@ -196,15 +208,12 @@ for (i in seq_len(nrow(centroids))) {
 
 if (length(nasa_all) > 0) {
   combined_nasa <- dplyr::bind_rows(nasa_all)
-  safe_write_csv(
-    combined_nasa,
-    file.path(
-      path_nasa,
-      glue::glue(
-        "nasa_power_daily_morocco_adm2_{start_year}_{end_year}.csv"
-      )
-    )
+  combined_nasa_file <- file.path(
+    path_nasa,
+    glue::glue("nasa_power_daily_morocco_adm2_{start_year}_{end_year}.csv")
   )
+  safe_write_csv(combined_nasa, combined_nasa_file)
+  record_checksum(combined_nasa_file, "NASA POWER daily (combined ADM2 points)")
 }
 
 safe_write_csv(
@@ -281,6 +290,9 @@ log_event(
 )
 
 # ---- 6. FAOSTAT land use: optional -----------------------------------------
+if (isTRUE(download_fao) && !requireNamespace("FAOSTAT", quietly = TRUE)) {
+  install.packages("FAOSTAT")
+}
 if (isTRUE(download_fao)) {
   tryCatch(
     {
@@ -336,13 +348,18 @@ if (isTRUE(download_heavy_osm)) {
     full.names = TRUE
   )
 
+  record_checksum(c(osm_zip, gpkg_files), "Geofabrik OSM Morocco free GeoPackage")
+
   final_status <- if (ok && length(gpkg_files) > 0) "downloaded" else "failed"
   log_event(
     "OpenStreetMap Geofabrik",
     "Geofabrik / OSM",
     osm_url,
     final_status,
-    "Road and POI layers used as ADM2 technology/service-access proxies."
+    paste(
+      "Road and POI layers used as ADM2 technology/service-access proxies.",
+      "Geofabrik 'latest' changes daily: the checksum log identifies the extract used."
+    )
   )
 
   if (final_status == "failed") {

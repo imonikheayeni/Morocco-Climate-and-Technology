@@ -1,14 +1,16 @@
 # =============================================================================
-# 03_clean_qc_build_ml_dataset_revised.R
-# Cleans and aligns the raw data, builds the ADM2 feature table, performs explicit
-# quality control and creates an analytical environment-type classification.
+# 03_clean_qc_build_ml_dataset.R
+# Cleans and aligns the raw data, builds the ADM2 feature table, performs
+# explicit quality control and assigns the analytical environment type.
 #
-# Critical safeguards:
-#   * OSM failures are never hidden.
-#   * A failed technology extraction stops the pipeline.
+# Safeguards:
+#   * OSM failures are never hidden; a failed technology extraction stops.
+#   * The OSM layers used are selected by name and written to the log.
 #   * Zero mapped facilities/roads are distinguished from missing extraction.
-#   * Population density is retained for context/classification, not as a CTVI
-#     technology-gap input.
+#   * Population is summed over ALL WorldPop country rasters listed in
+#     worldpop_iso3, and any ADM2 unit with a zero or near-zero total stops
+#     the pipeline (this indicates missing raster coverage).
+#   * Population density is used for context/classification only.
 # =============================================================================
 
 # ---- 1. Administrative boundaries ------------------------------------------
@@ -190,59 +192,100 @@ if (file.exists(nasa_file)) {
   )
 } else {
   stop(
-    "Combined NASA climate file not found. Run 02_download_sources_revised.R first.",
+    "Combined NASA climate file not found. Run 02_download_sources.R first.",
     call. = FALSE
   )
 }
 
 # ---- 3. WorldPop zonal population and density ------------------------------
+# Population per ADM2 unit is the sum of the coverage-weighted extraction from
+# each WorldPop country raster. The MAR and ESH rasters have non-overlapping
+# masks, so summing per-raster extractions equals extracting from a mosaic,
+# and the per-source contributions are kept for Supplementary Table S2.
+worldpop_files <- file.path(path_worldpop, worldpop_file_name(worldpop_iso3))
+names(worldpop_files) <- worldpop_iso3
+missing_worldpop <- worldpop_files[!file.exists(worldpop_files)]
+if (length(missing_worldpop) > 0) {
+  stop(
+    "Missing WorldPop raster(s): ", paste(basename(missing_worldpop), collapse = ", "),
+    ". Run 02_download_sources.R first.",
+    call. = FALSE
+  )
+}
+
+population_by_source <- purrr::imap_dfc(
+  worldpop_files,
+  function(file, iso) {
+    population_raster <- terra::rast(file)
+    adm2_for_population <- sf::st_transform(adm2, sf::st_crs(population_raster))
+    values <- exactextractr::exact_extract(
+      population_raster,
+      adm2_for_population,
+      "sum",
+      progress = FALSE
+    )
+    values[!is.finite(values)] <- 0
+    tibble::tibble(!!paste0("population_", tolower(iso)) := as.numeric(values))
+  }
+)
+
+population_source_columns <- names(population_by_source)
+
 population_features <- adm2 |>
   sf::st_drop_geometry() |>
-  dplyr::select(adm2_id, area_km2) |>
+  dplyr::select(adm2_id, adm2_name, area_km2) |>
+  dplyr::bind_cols(population_by_source) |>
   dplyr::mutate(
-    population = NA_real_,
-    population_density_per_km2 = NA_real_
+    population = rowSums(dplyr::across(dplyr::all_of(population_source_columns))),
+    population_density_per_km2 = population / area_km2,
+    population_sources_contributing = rowSums(
+      dplyr::across(dplyr::all_of(population_source_columns), ~ .x > 0)
+    ),
+    population_flag = dplyr::case_when(
+      population <= 0 ~ "Zero population: raster coverage missing",
+      population < population_flag_threshold ~
+        glue::glue("Below {population_flag_threshold} people: check coverage"),
+      TRUE ~ "OK"
+    )
   )
-
-worldpop_file <- list.files(
-  path_worldpop,
-  pattern = "\\.tif$",
-  full.names = TRUE
-)[1]
-
-if (!is.na(worldpop_file) && file.exists(worldpop_file)) {
-  population_features <- tryCatch(
-    {
-      population_raster <- terra::rast(worldpop_file)
-      adm2_for_population <- sf::st_transform(adm2, sf::st_crs(population_raster))
-      population_sum <- exactextractr::exact_extract(
-        population_raster,
-        adm2_for_population,
-        "sum",
-        progress = FALSE
-      )
-
-      adm2 |>
-        sf::st_drop_geometry() |>
-        dplyr::select(adm2_id, area_km2) |>
-        dplyr::mutate(
-          population = as.numeric(population_sum),
-          population_density_per_km2 = population / area_km2
-        )
-    },
-    error = function(e) {
-      warning("WorldPop extraction failed: ", conditionMessage(e))
-      population_features
-    }
-  )
-} else {
-  warning("WorldPop raster was not found; population priority outputs will be incomplete.")
-}
 
 safe_write_csv(
   population_features,
   file.path(path_int_socio, "morocco_adm2_population.csv")
 )
+safe_write_csv(
+  population_features,
+  file.path(path_tables, "population_extraction_check.csv")
+)
+
+flagged_population <- population_features |>
+  dplyr::filter(population_flag != "OK")
+if (any(population_features$population <= 0)) {
+  stop(
+    "Zero population extracted for: ",
+    paste(flagged_population$adm2_name, collapse = "; "),
+    ". Check that every raster in worldpop_iso3 is present.",
+    call. = FALSE
+  )
+}
+if (nrow(flagged_population) > 0) {
+  warning(
+    "Population below ", population_flag_threshold, " for: ",
+    paste(flagged_population$adm2_name, collapse = "; ")
+  )
+}
+log_event(
+  "WorldPop zonal extraction",
+  "WorldPop",
+  paste(basename(worldpop_files), collapse = "; "),
+  "processed",
+  glue::glue(
+    "Total extracted population {format(round(sum(population_features$population)), big.mark = ',')}; ",
+    "flagged units: {nrow(flagged_population)}."
+  )
+)
+population_features <- population_features |>
+  dplyr::select(-adm2_name)
 
 # ---- 4. OSM technology/service-access features -----------------------------
 osm_gpkg <- list.files(
@@ -261,30 +304,58 @@ if (is.na(osm_gpkg) || !file.exists(osm_gpkg)) {
 
 osm_features <- tryCatch(
   {
-    osm_layers <- sf::st_layers(osm_gpkg)$name
+    osm_layer_info <- sf::st_layers(osm_gpkg)
+    osm_layers <- osm_layer_info$name
 
-    road_layer <- osm_layers[
-      stringr::str_detect(
-        osm_layers,
-        stringr::regex("road|line", ignore_case = TRUE)
-      )
-    ][1]
-    poi_layer <- osm_layers[
-      stringr::str_detect(
-        osm_layers,
-        stringr::regex("poi|point", ignore_case = TRUE)
-      )
-    ][1]
+    osm_geometry <- vapply(
+      osm_layer_info$geomtype,
+      function(g) paste(unlist(g), collapse = "; "),
+      character(1)
+    )
+
+    # Select by the documented Geofabrik name first; otherwise fall back to a
+    # layer whose name contains the keyword and whose geometry type matches.
+    select_osm_layer <- function(pattern, keyword, geometry_regex) {
+      exact <- osm_layers[stringr::str_detect(osm_layers, pattern)]
+      if (length(exact) > 0) return(exact[1])
+      fallback <- osm_layers[
+        stringr::str_detect(osm_layers, stringr::regex(keyword, ignore_case = TRUE)) &
+          !stringr::str_detect(osm_layers, "_a(_|$)") &
+          stringr::str_detect(osm_geometry, stringr::regex(geometry_regex, ignore_case = TRUE))
+      ]
+      if (length(fallback) > 0) return(fallback[1])
+      NA_character_
+    }
+
+    road_layer <- select_osm_layer(osm_road_layer_pattern, "road", "line")
+    poi_layer <- select_osm_layer(osm_poi_point_layer_pattern, "poi", "point")
 
     if (is.na(road_layer)) {
-      stop("No road/line layer could be identified in the OSM GeoPackage.")
+      stop("No road line layer found. Layers: ", paste(osm_layers, collapse = ", "))
     }
     if (is.na(poi_layer)) {
-      stop("No POI/point layer could be identified in the OSM GeoPackage.")
+      stop("No POI point layer found. Layers: ", paste(osm_layers, collapse = ", "))
+    }
+
+    poi_geometry <- osm_geometry[match(poi_layer, osm_layers)]
+    if (!grepl("point", poi_geometry, ignore.case = TRUE)) {
+      stop("The selected POI layer '", poi_layer, "' is not a point layer.")
     }
 
     message("OSM road layer: ", road_layer)
     message("OSM POI layer: ", poi_layer)
+    safe_write_csv(
+      tibble::tibble(
+        recorded_at = as.character(Sys.time()),
+        osm_file = basename(osm_gpkg),
+        all_layers = paste(osm_layers, collapse = "; "),
+        road_layer = road_layer,
+        poi_layer = poi_layer,
+        poi_geometry = poi_geometry,
+        road_classes = paste(osm_road_classes, collapse = "; ")
+      ),
+      file.path(path_logs, "osm_layers_used.csv")
+    )
 
     adm2_equal <- adm2 |>
       sf::st_transform(6933) |>
@@ -300,7 +371,7 @@ osm_features <- tryCatch(
     if ("fclass" %in% names(roads)) {
       roads <- roads |>
         dplyr::filter(
-          stringr::str_to_lower(as.character(fclass)) %in% osm_major_road_classes
+          stringr::str_to_lower(as.character(fclass)) %in% osm_road_classes
         )
     }
 
@@ -326,7 +397,7 @@ osm_features <- tryCatch(
         road_km = tidyr::replace_na(road_km, 0),
         osm_road_km_per_100km2 = road_km / area_km2 * 100
       ) |>
-      dplyr::select(adm2_id, osm_road_km_per_100km2)
+      dplyr::select(adm2_id, osm_road_km = road_km, osm_road_km_per_100km2)
 
     # POI and health/education service density.
     pois <- sf::st_read(osm_gpkg, layer = poi_layer, quiet = TRUE) |>
@@ -361,7 +432,7 @@ osm_features <- tryCatch(
         poi_class = stringr::str_to_lower(poi_class),
         health_education_poi = stringr::str_detect(
           poi_class,
-          "hospital|clinic|doctor|pharmacy|school|university|college"
+          osm_health_education_regex
         )
       ) |>
       dplyr::group_by(adm2_id) |>
@@ -383,6 +454,8 @@ osm_features <- tryCatch(
       ) |>
       dplyr::select(
         adm2_id,
+        osm_poi_count = poi_count,
+        osm_health_education_poi_count = health_education_poi_count,
         osm_poi_count_per_100km2,
         osm_health_education_poi_per_100km2
       )
@@ -472,8 +545,8 @@ if (file.exists(wdi_file)) {
 feasibility <- tibble::tribble(
   ~variable, ~source, ~native_resolution, ~adm2_usable, ~role, ~limitation_or_proxy,
   "heat, dry days and precipitation", "NASA POWER", "ADM2 representative point", "yes", "climate exposure", "One representative point per province/prefecture; large areas may be under-sampled",
-  "population and population density", "WorldPop", "1 km raster", "yes", "context, environment classification and priority", "Not included in the technology-gap sub-index",
-  "road density", "OpenStreetMap", "vector", "yes", "technology/service access", "Completeness varies geographically",
+  "population and population density", "WorldPop (MAR + ESH rasters)", "1 km raster", "yes", "context, environment classification and priority", "Not included in the technology-gap sub-index",
+  "road density", "OpenStreetMap", "vector", "yes", "technology/service access", "Motorway to residential classes; completeness varies geographically",
   "POI and health/education POI density", "OpenStreetMap", "vector", "yes", "technology/service access", "Proxy for service availability rather than direct digital connectivity",
   "internet, mobile and broadband", "World Bank/ITU", "national", "no", "national context", "National constants cannot distinguish ADM2 areas",
   "electricity access", "World Bank", "national", "no", "national context", "Subnational HCP/ANRT data should replace proxies when obtained"
@@ -494,8 +567,9 @@ ml_raw <- keys |>
   dplyr::left_join(osm_features, by = "adm2_id")
 
 # ---- 8. Analytical environment type ----------------------------------------
-# This creates a reproducible first-pass classification for comparison. It must
-# be reviewed against official settlement/urban-boundary data before publication.
+# Reproducible analytical classification: whole-word name anchors for the
+# major cities and their fringe units, then population-density percentiles
+# computed across all ADM2 units. It is not an official classification.
 density_for_classification <- ml_raw$population_density_per_km2
 if (all(!is.finite(density_for_classification))) {
   stop(
@@ -520,6 +594,15 @@ rural_density_cut <- as.numeric(stats::quantile(
   na.rm = TRUE,
   type = 8
 ))
+
+safe_write_csv(
+  tibble::tibble(
+    rule = c("urban_core_density_cut", "rural_density_cut"),
+    quantile = c(smart_city_density_quantile, rural_density_quantile),
+    density_per_km2 = c(smart_density_cut, rural_density_cut)
+  ),
+  file.path(path_logs, "environment_density_cuts.csv")
+)
 
 ml_raw <- ml_raw |>
   dplyr::mutate(
@@ -619,7 +702,7 @@ ml_raw <- ml_raw |>
     environment_classification_notes = dplyr::coalesce(
       override_notes_by_id,
       override_notes_by_name,
-      "Auto-generated classification; review before publication"
+      "Automatic rule (name anchor or density percentile)"
     ),
     environment_type = factor(
       environment_type,
@@ -655,6 +738,7 @@ safe_write_csv(
       adm2_id,
       adm2_name,
       adm1_name,
+      area_km2,
       population,
       population_density_per_km2,
       environment_type,
@@ -662,6 +746,15 @@ safe_write_csv(
       environment_classification_notes
     ),
   file.path(path_tables, "environment_type_classification_review.csv")
+)
+
+anchored_units <- ml_raw |>
+  dplyr::filter(smart_city_name_anchor | urban_edge_name_anchor) |>
+  dplyr::select(adm2_id, adm2_name, smart_city_name_anchor, urban_edge_name_anchor)
+safe_write_csv(anchored_units, file.path(path_logs, "environment_name_anchors.csv"))
+message(
+  "Name anchors: ", sum(anchored_units$smart_city_name_anchor), " urban-core, ",
+  sum(anchored_units$urban_edge_name_anchor), " peri-urban."
 )
 
 # ---- 9. Missingness, imputation and feature QC -----------------------------
