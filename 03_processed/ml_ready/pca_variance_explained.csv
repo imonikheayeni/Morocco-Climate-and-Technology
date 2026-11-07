@@ -1,0 +1,7 @@
+component,variance_explained,cumulative_variance
+PC1,0.52549,0.52549
+PC2,0.32209,0.84758
+PC3,0.10966,0.95724
+PC4,0.02914,0.98638
+PC5,0.01267,0.99905
+PC6,9.6e-4,1.00001
