@@ -1,5 +1,7 @@
 # Climate-Technology Vulnerability Mapping in Morocco
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24044041.svg)](https://doi.org/10.5281/zenodo.24044041)
+
 Code and derived data for:
 
 > Ayeni, I., Namwila, M., Iraqi, Y., Damaj, I. *Mapping Climate-Technology Vulnerability across Morocco: An Open-Data Provincial Index, Spatial Typologies, and Urban-Rural Inequalities.* Manuscript submitted to *City and Environment Interactions*.
@@ -64,7 +66,11 @@ Geofabrik's "latest" extract changes daily. `05_logs/raw_file_checksums.csv` and
 
 ## Citation and licence
 
-Cite the archived release (see `CITATION.cff`; the Zenodo DOI is assigned when a GitHub release is published).
+Cite the archived release:
+
+> Ayeni, I., Namwila, M., Iraqi, Y., Damaj, I. (2026). *Code and derived data for: Mapping Climate-Technology Vulnerability across Morocco* (Version 1.0.0). Zenodo. https://doi.org/10.5281/zenodo.24044041
+
+Version 1.0.0 is the version used in the manuscript. The concept DOI [10.5281/zenodo.24044040](https://doi.org/10.5281/zenodo.24044040) always resolves to the latest version.
 
 Code: MIT licence (`LICENSE`). Derived tables: CC BY 4.0, except values derived from OpenStreetMap, which are available under ODbL 1.0.
 
