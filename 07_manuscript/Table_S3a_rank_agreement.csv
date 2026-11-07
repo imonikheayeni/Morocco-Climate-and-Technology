@@ -1,0 +1,4 @@
+check,spearman_rho,top10_retained,typology_agreement,max_abs_rank_change
+PCA (first component),0.987,10,,17
+Robust scaling (5th-95th percentile),0.936,10,73/75,40
+Log-transformed access densities,0.926,9,71/75,26

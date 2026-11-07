@@ -1,0 +1,5 @@
+diagnostic,value
+rf_oob_r2,0.9409298749810405
+rf_ntree,500
+kmeans_best_k,3
+pca_pc1_variance_explained,0.52549

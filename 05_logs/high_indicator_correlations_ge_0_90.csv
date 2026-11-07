@@ -1,0 +1,3 @@
+variable_1,variable_2,correlation
+osm_health_education_poi_per_100km2,osm_poi_count_per_100km2,0.9841004446154616
+dry_days_lt_1mm_5yr,precipitation_total_mm_5yr,-0.9184332993062326

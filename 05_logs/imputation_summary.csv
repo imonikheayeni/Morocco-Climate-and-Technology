@@ -1,0 +1,10 @@
+variable,missing_before,imputation_method,imputation_value
+heat_days_gt_35c_5yr,0,No imputation,
+temp_max_mean_c_5yr,0,No imputation,
+dry_days_lt_1mm_5yr,0,No imputation,
+precipitation_total_mm_5yr,0,No imputation,
+osm_road_km_per_100km2,0,No imputation,
+osm_poi_count_per_100km2,0,No imputation,
+osm_health_education_poi_per_100km2,0,No imputation,
+population,0,No imputation,
+population_density_per_km2,0,No imputation,

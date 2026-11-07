@@ -478,13 +478,31 @@ table_s3_geo <- geo_pairwise |>
     p_adjusted = signif(p_adjusted, 3),
     rank_biserial_r = round(rank_biserial_r, 3)
   )
+# Readable labels for the spatial-check identifiers written by script 05.
+spatial_check_labels <- c(
+  gi_hot_spots_queen = "Gi* hot spots, queen contiguity",
+  gi_hot_spots_knn = "Gi* hot spots, k-nearest neighbours",
+  gi_hot_spots_both = "Gi* hot spots under both definitions",
+  gi_cold_spots_queen = "Gi* cold spots, queen contiguity",
+  gi_cold_spots_knn = "Gi* cold spots, k-nearest neighbours",
+  gi_cold_spots_both = "Gi* cold spots under both definitions",
+  lisa_significant_analytical_bh05 = "Local Moran's I units significant, analytical p (BH-adjusted 0.05)",
+  lisa_significant_permutation_bh05 = "Local Moran's I units significant, permutation p (BH-adjusted 0.05)",
+  lisa_significant_permutation_raw05 = "Local Moran's I units significant, permutation p (unadjusted 0.05)",
+  knn_k = "Number of nearest neighbours (k)",
+  lisa_permutations = "Permutations for Local Moran's I"
+)
 table_s3_spatial <- dplyr::bind_rows(
   moran |> dplyr::transmute(
     check = paste0("Global Moran's I (", weights, ")"),
     value = round(moran_i, 3),
     p_value = signif(p_value, 3)
   ),
-  spatial_sens |> dplyr::transmute(check, value, p_value = NA_real_)
+  spatial_sens |> dplyr::transmute(
+    check = unname(ifelse(check %in% names(spatial_check_labels),
+                          spatial_check_labels[check], check)),
+    value, p_value = NA_real_
+  )
 )
 
 safe_write_csv(table_s1, file.path(path_manuscript, "Table_S1_adm2_results.csv"))

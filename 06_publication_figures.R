@@ -5,6 +5,8 @@
 # PDFs (cairo_pdf, fonts embedded) plus PNG previews.
 #
 # Figure 1 (analytical workflow) is a schematic and is not data-driven.
+# The submitted manuscript uses single panels of these figures (Figs. 2-12) and a
+# plain-language graphical abstract; see 07_manuscript/as_submitted/README.md.
 # =============================================================================
 
 hotspot_file <- file.path(path_ml, "morocco_ctvi_adm2_index_hotspots.gpkg")
@@ -237,8 +239,12 @@ composition <- readr::read_csv(
 
 fig4b <- ggplot2::ggplot(composition, ggplot2::aes(environment, percent, fill = resilience_typology)) +
   ggplot2::geom_col(width = 0.72, colour = "white", linewidth = 0.3) +
+  # `group` is set explicitly so the labels stack in the same order as the bars.
+  # Without it, the logical `colour` mapping changes the grouping and swaps the
+  # labels of adjacent segments (seen in the peri-urban bar).
   ggplot2::geom_text(
     ggplot2::aes(label = label,
+                 group = resilience_typology,
                  colour = resilience_typology %in% c("Critical vulnerability",
                                                      "Technology/service development gap")),
     position = ggplot2::position_stack(vjust = 0.5), size = 2.6, show.legend = FALSE

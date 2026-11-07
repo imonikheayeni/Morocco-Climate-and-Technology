@@ -1,0 +1,10 @@
+measure,group_1,group_2,p_adjusted,rank_biserial_r
+climate_exposure_score,Adjacent to an urban core,Urban core,0.11298595121091481,0.38842975206611574
+climate_exposure_score,Not adjacent to an urban core,Urban core,0.024645788279670455,0.5238095238095237
+climate_exposure_score,Not adjacent to an urban core,Adjacent to an urban core,0.24927435296147626,0.17748917748917759
+technology_gap_score,Adjacent to an urban core,Urban core,5.129421264438161e-5,0.9008264462809918
+technology_gap_score,Not adjacent to an urban core,Urban core,1.6210744366862428e-6,0.9913419913419914
+technology_gap_score,Not adjacent to an urban core,Adjacent to an urban core,0.002318248926746147,0.46753246753246747
+ctvi_score,Adjacent to an urban core,Urban core,0.006659318483246968,0.6198347107438016
+ctvi_score,Not adjacent to an urban core,Urban core,5.534707258649796e-4,0.7402597402597402
+ctvi_score,Not adjacent to an urban core,Adjacent to an urban core,0.18629171120511878,0.20346320346320357

@@ -1,0 +1,8 @@
+recorded_at,dataset,file,size_bytes,modified,md5
+2026-11-05 20:57:41.384064,geoBoundaries gbOpen MAR (pinned in repository),geoboundaries_MAR_ADM1.geojson,1736594,2026-09-04 15:44:27.522894,c4bc58309eac332c362eba0f63cadcc1
+2026-11-05 20:57:41.384064,geoBoundaries gbOpen MAR (pinned in repository),geoboundaries_MAR_ADM2.geojson,3196869,2026-09-04 15:44:27.560398,195fa94cda93b32a409a9304547a8ad4
+2026-11-05 20:57:56.610514,WorldPop 1 km UNadj MAR 2020,mar_ppp_2020_1km_Aggregated_UNadj.tif,2593505,2026-11-05 20:57:56.579477,bccf79da0854cf8da586e7ced5a66119
+2026-11-05 20:57:57.076605,WorldPop 1 km UNadj ESH 2020,esh_ppp_2020_1km_Aggregated_UNadj.tif,1336150,2026-11-05 20:57:57.056015,a9a1f803187307a5bde69e95a6c5d7dc
+2026-11-05 20:58:03.334719,NASA POWER daily (combined ADM2 points),nasa_power_daily_morocco_adm2_2014_2024.csv,42782676,2026-11-05 20:58:03.333073,8b8c016524f19fcbcbbeeca8472f959e
+2026-11-05 20:58:26.923392,Geofabrik OSM Morocco free GeoPackage,morocco-latest-free.gpkg.zip,504109817,2026-09-04 15:44:42.597967,128a2a42f0b56f65960268fe9b66c813
+2026-11-05 20:58:26.923392,Geofabrik OSM Morocco free GeoPackage,morocco.gpkg,956903424,2026-09-04 15:44:38.558399,f0e0238ae49f74253bf9782ceb297da6

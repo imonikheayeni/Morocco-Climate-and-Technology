@@ -1,0 +1,76 @@
+rank,adm2_id,unit,unit_type,region,environment,environment_basis,environment_contiguity,population,climate_exposure,access_gap,ctvi,typology,gi_star,priority
+1,96644757B25593504689486,Aousserd,Province,Dakhla-Oued Ed-Dahab,Rural/lower-density,Population density <= 40th percentile,Not adjacent,2799,1,1,1,CV,Hot (0.05),0.532
+2,96644757B78111329468616,Oued Ed-Dahab,Province,Dakhla-Oued Ed-Dahab,Rural/lower-density,Population density <= 40th percentile,Adjacent,147535,0.921,1,0.96,CV,Hot (0.05),0.766
+3,96644757B35891480133263,Errachidia,Province,Drâa-Tafilalet,Rural/lower-density,Population density <= 40th percentile,Not adjacent,441455,0.836,0.998,0.917,CV,Hot (0.10),0.799
+4,96644757B62254917052717,Assa-Zag,Province,Guelmim-Oued Noun,Rural/lower-density,Population density <= 40th percentile,Not adjacent,19797,0.834,1,0.917,CV,Hot (0.05),0.608
+5,96644757B26550498921337,Tata,Province,Souss-Massa,Rural/lower-density,Population density <= 40th percentile,Not adjacent,111843,0.829,0.999,0.914,CV,Hot (0.05),0.712
+6,96644757B83322507681707,Zagora,Province,Drâa-Tafilalet,Rural/lower-density,Population density <= 40th percentile,Not adjacent,327628,0.816,0.997,0.907,CV,Hot (0.05),0.771
+7,96644757B70524131405695,Es-Semara,Province,Laâyoune-Sakia El Hamra,Rural/lower-density,Population density <= 40th percentile,Not adjacent,56570,0.813,1,0.906,CV,Hot (0.10),0.664
+8,96644757B48127384361052,Boujdour,Province,Laâyoune-Sakia El Hamra,Rural/lower-density,Population density <= 40th percentile,Not adjacent,51395,0.793,1,0.897,CV,Hot (0.05),0.652
+9,96644757B53703826618026,Taroudant,Province,Souss-Massa,Rural/lower-density,Population density <= 40th percentile,Adjacent,892345,0.675,0.988,0.831,CV,Hot (0.10),0.763
+10,96644757B25874170222857,Figuig,Province,Oriental,Rural/lower-density,Population density <= 40th percentile,Not adjacent,142911,0.627,0.999,0.813,CV,n.s.,0.646
+11,96644757B52167870329218,Tiznit,Province,Souss-Massa,Rural/lower-density,Population density <= 40th percentile,Not adjacent,208228,0.6,0.987,0.793,CV,n.s.,0.651
+12,96644757B63187791317705,Agadir Ida-Outanane,Prefecture,Souss-Massa,Peri-urban,Intermediate population-density band,Adjacent,746576,0.625,0.959,0.792,CA,n.s.,0.718
+13,96644757B90795389022281,Laayoune,Province,Laâyoune-Sakia El Hamra,Rural/lower-density,Population density <= 40th percentile,Not adjacent,296214,0.579,0.996,0.788,CV,Hot (0.10),0.665
+14,96644757B46616002618727,Chichaoua,Province,Marrakech-Safi,Rural/lower-density,Population density <= 40th percentile,Adjacent,406337,0.59,0.982,0.786,CA,n.s.,0.68
+15,96644757B36466177595872,Guelmim,Province,Guelmim-Oued Noun,Rural/lower-density,Population density <= 40th percentile,Not adjacent,205776,0.572,0.996,0.784,CV,Hot (0.10),0.643
+16,96644757B8060198419886,Tan-Tan,Province,Guelmim-Oued Noun,Rural/lower-density,Population density <= 40th percentile,Not adjacent,98245,0.561,0.997,0.779,CV,n.s.,0.6
+17,96644757B21316479060137,Rhamna,Province,Marrakech-Safi,Rural/lower-density,Population density <= 40th percentile,Adjacent,329302,0.564,0.989,0.777,CV,n.s.,0.661
+18,96644757B99021473747258,Chtouka-Ait Baha,Province,Souss-Massa,Peri-urban,Intermediate population-density band,Adjacent,429388,0.558,0.985,0.772,CV,n.s.,0.67
+19,96644757B21870556317795,El Kelaa des Sraghna,Province,Marrakech-Safi,Peri-urban,Intermediate population-density band,Not adjacent,601250,0.558,0.984,0.771,CV,n.s.,0.687
+20,96644757B54259280648674,Youssoufia,Province,Marrakech-Safi,Peri-urban,Intermediate population-density band,Adjacent,269568,0.544,0.987,0.766,CV,n.s.,0.642
+21,96644757B81090244987905,Boulemane,Province,Fez-Meknes,Rural/lower-density,Population density <= 40th percentile,Not adjacent,209999,0.527,0.997,0.762,CV,n.s.,0.626
+22,96644757B23117375948520,Safi,Province,Marrakech-Safi,Peri-urban,Intermediate population-density band,Not adjacent,717593,0.544,0.976,0.76,CA,n.s.,0.687
+23,96644757B698999344864,Al Haouz,Province,Marrakech-Safi,Peri-urban,Named peri-urban anchor,Adjacent,636693,0.534,0.983,0.759,CA,n.s.,0.679
+24,96644757B21390270390615,Jerada,Province,Oriental,Rural/lower-density,Population density <= 40th percentile,Not adjacent,112885,0.511,0.996,0.754,CV,n.s.,0.587
+25,96644757B53936679900609,Essaouira,Province,Marrakech-Safi,Rural/lower-density,Population density <= 40th percentile,Not adjacent,455306,0.509,0.987,0.748,CV,n.s.,0.653
+26,96644757B99662254658575,Inezgane-Ait Melloul,Prefecture,Souss-Massa,Urban core,Population density >= 85th percentile,Core,577720,0.625,0.856,0.74,CA,n.s.,0.658
+27,96644757B41522516415054,Ouarzazate,Province,Drâa-Tafilalet,Rural/lower-density,Population density <= 40th percentile,Not adjacent,319579,0.483,0.994,0.739,CV,n.s.,0.627
+28,96644757B50122508033550,Fquih Ben Saleh,Province,Béni Mellal-Khénifra,Peri-urban,Intermediate population-density band,Not adjacent,538550,0.494,0.977,0.735,CA,n.s.,0.65
+29,96644757B51161748863193,Sidi Ifni,Province,Guelmim-Oued Noun,Rural/lower-density,Population density <= 40th percentile,Not adjacent,103097,0.473,0.988,0.731,CV,n.s.,0.565
+30,96644757B63064605054668,Guercif,Province,Oriental,Rural/lower-density,Population density <= 40th percentile,Not adjacent,245016,0.461,0.995,0.728,CV,n.s.,0.605
+31,96644757B80339347175881,Marrakech,Prefecture,Marrakech-Safi,Urban core,Named urban-core anchor,Core,1557852,0.534,0.92,0.727,CA,n.s.,0.694
+32,96644757B39685617616684,Tinghir,Province,Drâa-Tafilalet,Rural/lower-density,Population density <= 40th percentile,Not adjacent,357225,0.432,0.995,0.714,CV,n.s.,0.611
+33,96644757B75888110493475,Tarfaya,Province,Laâyoune-Sakia El Hamra,Rural/lower-density,Population density <= 40th percentile,Not adjacent,29831,0.416,0.999,0.707,CV,Hot (0.10),0.488
+34,96644757B40957387644980,Beni Mellal,Province,Béni Mellal-Khénifra,Peri-urban,Intermediate population-density band,Not adjacent,613557,0.427,0.981,0.704,CA,n.s.,0.629
+35,96644757B15248572972708,Khouribga,Province,Béni Mellal-Khénifra,Peri-urban,Intermediate population-density band,Not adjacent,581108,0.424,0.981,0.703,CA,n.s.,0.625
+36,96644757B4563753155162,Taourirt,Province,Oriental,Rural/lower-density,Population density <= 40th percentile,Not adjacent,257621,0.41,0.993,0.702,CV,n.s.,0.586
+37,96644757B53695376753874,Oujda-Angad,Prefecture,Oriental,Peri-urban,Intermediate population-density band,Not adjacent,617053,0.44,0.943,0.692,CA,n.s.,0.618
+38,96644757B30309850889145,Sidi Bennour,Province,Casablanca-Settat,Peri-urban,Intermediate population-density band,Not adjacent,476770,0.394,0.978,0.686,CA,n.s.,0.601
+39,96644757B24539393832458,Khémisset,Province,Rabat-Salé-Kenitra,Peri-urban,Intermediate population-density band,Adjacent,567870,0.375,0.988,0.682,TD,n.s.,0.605
+40,96644757B9718685225615,Sidi Kacem,Province,Rabat-Salé-Kenitra,Peri-urban,Intermediate population-density band,Adjacent,550909,0.376,0.982,0.679,RR,n.s.,0.602
+41,96644757B34372354169334,Benslimane,Province,Casablanca-Settat,Peri-urban,Intermediate population-density band,Adjacent,248482,0.378,0.979,0.679,RR,n.s.,0.565
+42,96644757B9799798831472,Settat,Province,Casablanca-Settat,Peri-urban,Intermediate population-density band,Not adjacent,679692,0.37,0.984,0.677,RR,n.s.,0.609
+43,96644757B10773066300421,Azilal,Province,Béni Mellal-Khénifra,Rural/lower-density,Population density <= 40th percentile,Not adjacent,611873,0.347,0.992,0.67,TD,n.s.,0.598
+44,96644757B64432809888793,Sidi Slimane,Province,Rabat-Salé-Kenitra,Peri-urban,Intermediate population-density band,Adjacent,337563,0.34,0.981,0.66,RR,n.s.,0.563
+45,96644757B25654465299878,Nador,Province,Oriental,Peri-urban,Intermediate population-density band,Not adjacent,585475,0.35,0.967,0.658,RR,n.s.,0.586
+46,96644757B12662883146655,Kénitra,Province,Rabat-Salé-Kenitra,Peri-urban,Named peri-urban anchor,Adjacent,1218657,0.34,0.965,0.652,RR,n.s.,0.612
+47,96644757B60043813814440,Meknès,Prefecture,Fez-Meknes,Urban core,Named urban-core anchor,Core,913407,0.368,0.936,0.652,RR,n.s.,0.599
+48,96644757B1478822582790,Sefrou,Province,Fez-Meknes,Peri-urban,Intermediate population-density band,Adjacent,315545,0.315,0.989,0.652,TD,n.s.,0.553
+49,96644757B91342156363380,Skhirate-Témara,Prefecture,Rabat-Salé-Kenitra,Peri-urban,Named peri-urban anchor,Adjacent,750215,0.378,0.925,0.651,RR,n.s.,0.59
+50,96644757B42104761334354,Moulay Yacoub,Province,Fez-Meknes,Peri-urban,Named peri-urban anchor,Adjacent,248448,0.314,0.982,0.648,RR,n.s.,0.539
+51,96644757B88930410593624,Driouch,Province,Oriental,Rural/lower-density,Population density <= 40th percentile,Not adjacent,206275,0.308,0.984,0.646,TD,n.s.,0.53
+52,96644757B90056368806308,El Hajeb,Province,Fez-Meknes,Peri-urban,Intermediate population-density band,Adjacent,294594,0.304,0.982,0.643,RR,n.s.,0.542
+53,96644757B5863178934624,El Jadida,Province,Casablanca-Settat,Peri-urban,Intermediate population-density band,Not adjacent,861070,0.315,0.97,0.642,RR,n.s.,0.588
+54,96644757B69343874835814,Berkane,Province,Oriental,Peri-urban,Intermediate population-density band,Not adjacent,304538,0.309,0.965,0.637,RR,n.s.,0.539
+55,96644757B71822601453569,Midelt,Province,Drâa-Tafilalet,Rural/lower-density,Population density <= 40th percentile,Not adjacent,322516,0.279,0.996,0.637,TD,n.s.,0.541
+56,96644757B52871738396395,Khénifra,Province,Béni Mellal-Khénifra,Rural/lower-density,Population density <= 40th percentile,Not adjacent,388088,0.28,0.992,0.636,TD,n.s.,0.548
+57,96644757B36967765471663,Taounate,Province,Fez-Meknes,Peri-urban,Intermediate population-density band,Not adjacent,680440,0.283,0.987,0.635,TD,n.s.,0.571
+58,96644757B26045285741175,Berrechid,Province,Casablanca-Settat,Peri-urban,Intermediate population-density band,Not adjacent,612419,0.272,0.967,0.62,RR,n.s.,0.553
+59,96644757B64717664824106,Ifrane,Province,Fez-Meknes,Rural/lower-density,Population density <= 40th percentile,Not adjacent,170763,0.231,0.99,0.61,TD,n.s.,0.493
+60,96644757B6720908192283,Salé,Prefecture,Rabat-Salé-Kenitra,Urban core,Named urban-core anchor,Core,1049675,0.297,0.924,0.61,RR,n.s.,0.567
+61,96644757B93440982531475,Ouezzane,Province,Tangier-Tetouan-Al Hoceima,Peri-urban,Intermediate population-density band,Not adjacent,302198,0.233,0.985,0.609,TD,n.s.,0.515
+62,96644757B18768670389586,Larache,Province,Tangier-Tetouan-Al Hoceima,Peri-urban,Intermediate population-density band,Adjacent,516010,0.233,0.982,0.608,RR,n.s.,0.536
+63,96644757B85287588144355,Taza,Province,Fez-Meknes,Peri-urban,Intermediate population-density band,Not adjacent,528100,0.2,0.988,0.594,TD,n.s.,0.524
+64,96644757B92138134403299,Mediouna,Province,Casablanca-Settat,Peri-urban,Named peri-urban anchor,Adjacent,504064,0.272,0.906,0.589,RR,Cold (0.05),0.518
+65,96644757B99920267922653,Al Hoceima,Province,Tangier-Tetouan-Al Hoceima,Peri-urban,Intermediate population-density band,Not adjacent,404988,0.191,0.983,0.587,RR,n.s.,0.508
+66,96644757B89345886069248,Nouaceur,Province,Casablanca-Settat,Peri-urban,Named peri-urban anchor,Adjacent,453149,0.272,0.894,0.583,RR,Cold (0.05),0.509
+67,96644757B84561517472973,Tétouan,Province,Tangier-Tetouan-Al Hoceima,Urban core,Named urban-core anchor,Core,619838,0.173,0.967,0.57,RR,Cold (0.10),0.509
+68,96644757B27397508075839,Mohammedia,Prefecture,Casablanca-Settat,Urban core,Population density >= 85th percentile,Core,769262,0.272,0.849,0.561,RR,Cold (0.05),0.509
+69,96644757B56432502406176,Fahs-Anjra,Province,Tangier-Tetouan-Al Hoceima,Peri-urban,Named peri-urban anchor,Adjacent,93711,0.134,0.968,0.551,RR,n.s.,0.423
+70,96644757B54306876372793,Chefchaouen,Province,Tangier-Tetouan-Al Hoceima,Peri-urban,Intermediate population-density band,Adjacent,480116,0.1,0.986,0.543,TD,n.s.,0.476
+71,96644757B99361415702964,Tangier-Assilah,Prefecture,Tangier-Tetouan-Al Hoceima,Urban core,Named urban-core anchor,Core,1272597,0.173,0.88,0.526,RR,n.s.,0.496
+72,96644757B89687162507810,M'diq-Fnideq,Prefecture,Tangier-Tetouan-Al Hoceima,Urban core,Population density >= 85th percentile,Core,244111,0.134,0.879,0.507,RR,n.s.,0.421
+73,96644757B91545835536411,Rabat,Prefecture,Rabat-Salé-Kenitra,Urban core,Named urban-core anchor,Core,556832,0.297,0.24,0.268,RR,Cold (0.10),0.238
+74,96644757B2759448404756,Fès,Prefecture,Fez-Meknes,Urban core,Named urban-core anchor,Core,1251975,0.314,0.213,0.263,RR,n.s.,0.248
+75,96644757B69656421663665,Casablanca,Prefecture,Casablanca-Settat,Urban core,Named urban-core anchor,Core,3033344,0.272,0.093,0.182,RR,Cold (0.05),0.182

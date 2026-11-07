@@ -1,0 +1,51 @@
+timestamp,dataset,source,url,status,note
+2026-06-15 23:21:52.065135,geoBoundaries ADM1,geoBoundaries,https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/MAR/ADM1/geoBoundaries-MAR-ADM1.geojson,downloaded,Admin boundary GeoJSON; converted to GPKG/SHP in step 03.
+2026-06-15 23:21:53.840658,geoBoundaries ADM2,geoBoundaries,https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/MAR/ADM2/geoBoundaries-MAR-ADM2.geojson,downloaded,Admin boundary GeoJSON; converted to GPKG/SHP in step 03.
+2026-06-15 23:21:54.369312,WorldPop population 1km,WorldPop,https://data.worldpop.org/GIS/Population/Global_2000_2020/2020/MAR/mar_ppp_2020_1km_Aggregated_UNadj.tif,failed,Top-down UN-adjusted population grid; aggregated to ADM2 in step 03.
+2026-06-16 01:28:07.6506,WorldPop population 1km,WorldPop,https://data.worldpop.org/GIS/Population/Global_2000_2020/2020/MAR/mar_ppp_2020_1km_Aggregated_UNadj.tif,failed,Top-down UN-adjusted population grid; aggregated to ADM2 in step 03.
+2026-06-16 01:31:43.92859,NASA POWER daily climate (ADM2),NASA POWER API,https://power.larc.nasa.gov/api/temporal/daily/point,downloaded,"Daily climate at 75 ADM2 centroids, 2014-2024."
+2026-06-16 01:32:48.847497,World Bank WDI / ITU / UN,World Bank API,https://api.worldbank.org/v2/,downloaded,National context indicators incl. ITU technology + UN demographics.
+2026-06-16 01:32:49.807194,UN Population Data Portal catalog,UN Population Division,https://population.un.org/dataportalapi/api/v1/indicators,downloaded,Catalogs saved for documentation; national series only (not ADM2-resolved).
+2026-06-16 01:36:14.513866,FAOSTAT Land Use,FAOSTAT,https://www.fao.org/faostat/,failed,Login failed. Check your username and password.
+2026-06-16 01:39:13.243469,OpenStreetMap Geofabrik,Geofabrik / OSM,https://download.geofabrik.de/africa/morocco-latest-free.gpkg.zip,downloaded,Road + POI layers used as ADM2 technology-access proxies.
+2026-06-16 01:58:38.106836,WorldPop population 1km,WorldPop,https://data.worldpop.org/GIS/Population/Global_2000_2020/2020/MAR/mar_ppp_2020_1km_Aggregated_UNadj.tif,failed,Top-down UN-adjusted population grid; aggregated to ADM2 in step 03.
+2026-06-16 01:58:47.576183,NASA POWER daily climate (ADM2),NASA POWER API,https://power.larc.nasa.gov/api/temporal/daily/point,downloaded,"Daily climate at 75 ADM2 centroids, 2014-2024."
+2026-06-16 01:59:06.264025,World Bank WDI / ITU / UN,World Bank API,https://api.worldbank.org/v2/,downloaded,National context indicators incl. ITU technology + UN demographics.
+2026-06-16 01:59:06.330547,UN Population Data Portal catalog,UN Population Division,https://population.un.org/dataportalapi/api/v1/indicators,downloaded,Catalogs saved for documentation; national series only (not ADM2-resolved).
+2026-06-16 01:59:12.90093,FAOSTAT Land Use,FAOSTAT,https://www.fao.org/faostat/,failed,Login failed. Check your username and password.
+2026-06-16 01:59:12.9178,OpenStreetMap Geofabrik,Geofabrik / OSM,https://download.geofabrik.de/africa/morocco-latest-free.gpkg.zip,downloaded,Road + POI layers used as ADM2 technology-access proxies.
+2026-06-23 11:31:45.931543,WorldPop population 1km,WorldPop,https://data.worldpop.org/GIS/Population/Global_2000_2020/2020/MAR/mar_ppp_2020_1km_Aggregated_UNadj.tif,failed,Top-down UN-adjusted population grid; aggregated to ADM2 in step 03.
+2026-06-23 11:31:55.999232,NASA POWER daily climate (ADM2),NASA POWER API,https://power.larc.nasa.gov/api/temporal/daily/point,downloaded,"Daily climate at 75 ADM2 centroids, 2014-2024."
+2026-06-23 11:32:58.863967,World Bank WDI / ITU / UN,World Bank API,https://api.worldbank.org/v2/,downloaded,National context indicators incl. ITU technology + UN demographics.
+2026-06-23 11:32:58.9202,UN Population Data Portal catalog,UN Population Division,https://population.un.org/dataportalapi/api/v1/indicators,downloaded,Catalogs saved for documentation; national series only (not ADM2-resolved).
+2026-06-23 11:32:58.956214,FAOSTAT Land Use,FAOSTAT,https://www.fao.org/faostat/,skipped,Skipped to avoid interactive login; national context only.
+2026-06-23 11:32:59.004418,OpenStreetMap Geofabrik,Geofabrik / OSM,https://download.geofabrik.de/africa/morocco-latest-free.gpkg.zip,downloaded,Road + POI layers used as ADM2 technology-access proxies.
+2026-07-09 09:22:11.780656,WorldPop population 1km,WorldPop,https://data.worldpop.org/GIS/Population/Global_2000_2020/2020/MAR/mar_ppp_2020_1km_Aggregated_UNadj.tif,failed,Top-down UN-adjusted population grid; aggregated to ADM2 in step 03.
+2026-07-09 09:22:29.356336,NASA POWER daily climate (ADM2),NASA POWER API,https://power.larc.nasa.gov/api/temporal/daily/point,downloaded,"Daily climate at 75 ADM2 centroids, 2014-2024."
+2026-07-09 09:23:49.436496,World Bank WDI / ITU / UN,World Bank API,https://api.worldbank.org/v2/,downloaded,National context indicators incl. ITU technology + UN demographics.
+2026-07-09 09:23:49.562848,UN Population Data Portal catalog,UN Population Division,https://population.un.org/dataportalapi/api/v1/indicators,downloaded,Catalogs saved for documentation; national series only (not ADM2-resolved).
+2026-07-09 09:23:49.577795,FAOSTAT Land Use,FAOSTAT,https://www.fao.org/faostat/,skipped,Skipped to avoid interactive login; national context only.
+2026-07-09 09:23:49.703388,OpenStreetMap Geofabrik,Geofabrik / OSM,https://download.geofabrik.de/africa/morocco-latest-free.gpkg.zip,downloaded,Road + POI layers used as ADM2 technology-access proxies.
+2026-07-16 13:26:20.102435,WorldPop population 1 km,WorldPop,https://data.worldpop.org/GIS/Population/Global_2000_2020/2020/MAR/mar_ppp_2020_1km_Aggregated_UNadj.tif,failed,UN-adjusted population grid; aggregated to ADM2 in step 03.
+2026-07-16 13:26:29.469899,NASA POWER daily climate (ADM2),NASA POWER API,https://power.larc.nasa.gov/api/temporal/daily/point,downloaded,Successful ADM2 points: 75; failed: 0.
+2026-07-16 13:38:03.783562,World Bank WDI / ITU / UN,World Bank API,https://api.worldbank.org/v2/,downloaded,National context only; not used as ADM2 model features.
+2026-07-16 13:38:03.84227,UN Population Data Portal catalog,UN Population Division,https://population.un.org/dataportalapi/api/v1/indicators,downloaded,Catalogs retained for documentation; national context only.
+2026-07-16 13:38:03.857647,FAOSTAT land use,FAOSTAT,https://www.fao.org/faostat/,skipped,download_fao = FALSE.
+2026-07-16 13:38:03.894034,OpenStreetMap Geofabrik,Geofabrik / OSM,https://download.geofabrik.de/africa/morocco-latest-free.gpkg.zip,downloaded,Road and POI layers used as ADM2 technology/service-access proxies.
+2026-07-16 13:47:45.292565,OSM technology features,Geofabrik / OSM,C:/Users/User/Downloads/Morocco_CTVI_data_sourcing_pack/01_raw/osm/morocco.gpkg,processed,3 usable technology/service-access indicators produced.
+2026-09-04 16:18:10.594465,WorldPop population 1 km,WorldPop,https://data.worldpop.org/GIS/Population/Global_2000_2020/2020/MAR/mar_ppp_2020_1km_Aggregated_UNadj.tif,failed,UN-adjusted population grid; aggregated to ADM2 in step 03.
+2026-09-04 16:18:16.315853,NASA POWER daily climate (ADM2),NASA POWER API,https://power.larc.nasa.gov/api/temporal/daily/point,downloaded,Successful ADM2 points: 75; failed: 0.
+2026-09-04 16:18:20.70936,World Bank WDI / ITU / UN,World Bank API,https://api.worldbank.org/v2/,downloaded,National context only; not used as ADM2 model features.
+2026-09-04 16:18:20.727891,UN Population Data Portal catalog,UN Population Division,https://population.un.org/dataportalapi/api/v1/indicators,downloaded,Catalogs retained for documentation; national context only.
+2026-09-04 16:18:20.73442,FAOSTAT land use,FAOSTAT,https://www.fao.org/faostat/,skipped,download_fao = FALSE.
+2026-09-04 16:18:20.757785,OpenStreetMap Geofabrik,Geofabrik / OSM,https://download.geofabrik.de/africa/morocco-latest-free.gpkg.zip,downloaded,Road and POI layers used as ADM2 technology/service-access proxies.
+2026-09-04 16:22:32.606332,OSM technology features,Geofabrik / OSM,C:/Users/imonikhe.ayeni/Downloads/Morocco_CTVI_data_sourcing_pack/01_raw/osm/morocco.gpkg,processed,3 usable technology/service-access indicators produced.
+2026-11-05 20:57:56.586123,WorldPop population 1 km (MAR),WorldPop,https://data.worldpop.org/GIS/Population/Global_2000_2020_1km_UNadj/2020/MAR/mar_ppp_2020_1km_Aggregated_UNadj.tif,downloaded,UN-adjusted 1 km population grid; aggregated to ADM2 in step 03.
+2026-11-05 20:57:57.068079,WorldPop population 1 km (ESH),WorldPop,https://data.worldpop.org/GIS/Population/Global_2000_2020_1km_UNadj/2020/ESH/esh_ppp_2020_1km_Aggregated_UNadj.tif,downloaded,UN-adjusted 1 km population grid; aggregated to ADM2 in step 03.
+2026-11-05 20:58:03.483054,NASA POWER daily climate (ADM2),NASA POWER API,https://power.larc.nasa.gov/api/temporal/daily/point,downloaded,Successful ADM2 points: 75; failed: 0.
+2026-11-05 20:58:26.86902,World Bank WDI / ITU / UN,World Bank API,https://api.worldbank.org/v2/,downloaded,National context only; not used as ADM2 model features.
+2026-11-05 20:58:26.881987,UN Population Data Portal catalog,UN Population Division,https://population.un.org/dataportalapi/api/v1/indicators,downloaded,Catalogs retained for documentation; national context only.
+2026-11-05 20:58:26.897219,FAOSTAT land use,FAOSTAT,https://www.fao.org/faostat/,skipped,download_fao = FALSE.
+2026-11-05 20:58:48.0432,OpenStreetMap Geofabrik,Geofabrik / OSM,https://download.geofabrik.de/africa/morocco-latest-free.gpkg.zip,downloaded,Road and POI layers used as ADM2 technology/service-access proxies. Geofabrik 'latest' changes daily: the checksum log identifies the extract used.
+2026-11-05 20:58:51.946763,WorldPop zonal extraction,WorldPop,mar_ppp_2020_1km_Aggregated_UNadj.tif; esh_ppp_2020_1km_Aggregated_UNadj.tif,processed,"Total extracted population 37,141,426; flagged units: 0."
+2026-11-05 21:02:54.85458,OSM technology features,Geofabrik / OSM,C:/Users/imonikhe.ayeni/Downloads/Morocco_CTVI_data_sourcing_pack/01_raw/osm/morocco.gpkg,processed,3 usable technology/service-access indicators produced.

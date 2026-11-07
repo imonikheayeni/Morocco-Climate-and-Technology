@@ -1,0 +1,10 @@
+measure,method,group_1,group_2,p_adjusted,rank_biserial_r
+climate_exposure_score,Pairwise Wilcoxon rank-sum; Benjamini-Hochberg adjustment,Urban edge / peri-urban,Smart city / urban core,0.15725690494927602,0.2887700534759359
+climate_exposure_score,Pairwise Wilcoxon rank-sum; Benjamini-Hochberg adjustment,Rural / lower-density,Smart city / urban core,0.0012561485116193705,0.6909090909090909
+climate_exposure_score,Pairwise Wilcoxon rank-sum; Benjamini-Hochberg adjustment,Rural / lower-density,Urban edge / peri-urban,6.176616394415468e-5,0.6215686274509804
+technology_gap_score,Pairwise Wilcoxon rank-sum; Benjamini-Hochberg adjustment,Urban edge / peri-urban,Smart city / urban core,5.218564870901332e-6,0.9251336898395721
+technology_gap_score,Pairwise Wilcoxon rank-sum; Benjamini-Hochberg adjustment,Rural / lower-density,Smart city / urban core,1.9443622049086784e-6,1
+technology_gap_score,Pairwise Wilcoxon rank-sum; Benjamini-Hochberg adjustment,Rural / lower-density,Urban edge / peri-urban,4.750100313088979e-10,0.9333333333333333
+ctvi_score,Pairwise Wilcoxon rank-sum; Benjamini-Hochberg adjustment,Urban edge / peri-urban,Smart city / urban core,0.0062668503732647984,0.5561497326203209
+ctvi_score,Pairwise Wilcoxon rank-sum; Benjamini-Hochberg adjustment,Rural / lower-density,Smart city / urban core,4.699732165835968e-5,0.8606060606060606
+ctvi_score,Pairwise Wilcoxon rank-sum; Benjamini-Hochberg adjustment,Rural / lower-density,Urban edge / peri-urban,1.9117805795110243e-5,0.6588235294117648

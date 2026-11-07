@@ -1,0 +1,12 @@
+check,value
+gi_hot_spots_queen,12
+gi_hot_spots_knn,3
+gi_hot_spots_both,3
+gi_cold_spots_queen,6
+gi_cold_spots_knn,5
+gi_cold_spots_both,4
+lisa_significant_analytical_bh05,0
+lisa_significant_permutation_bh05,0
+lisa_significant_permutation_raw05,20
+knn_k,4
+lisa_permutations,999

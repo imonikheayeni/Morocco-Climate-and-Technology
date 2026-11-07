@@ -1,0 +1,7 @@
+variable,source,native_resolution,adm2_usable,role,limitation_or_proxy
+"heat, dry days and precipitation",NASA POWER,ADM2 representative point,yes,climate exposure,One representative point per province/prefecture; large areas may be under-sampled
+population and population density,WorldPop (MAR + ESH rasters),1 km raster,yes,"context, environment classification and priority",Not included in the technology-gap sub-index
+road density,OpenStreetMap,vector,yes,technology/service access,Motorway to residential classes; completeness varies geographically
+POI and health/education POI density,OpenStreetMap,vector,yes,technology/service access,Proxy for service availability rather than direct digital connectivity
+"internet, mobile and broadband",World Bank/ITU,national,no,national context,National constants cannot distinguish ADM2 areas
+electricity access,World Bank,national,no,national context,Subnational HCP/ANRT data should replace proxies when obtained

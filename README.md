@@ -16,12 +16,14 @@ The pipeline builds a Climate-Technology Vulnerability Index (CTVI) for Morocco'
 | `03_clean_qc_build_ml_dataset.R` | Climate summaries, population, OSM densities, environment groups |
 | `04_model_index_typology.R` | CTVI, typologies, group tests, sensitivity analyses |
 | `05_hotspots_maps_reporting.R` | Gi*, Local Moran's I, global Moran's I, spatial checks |
-| `06_publication_figures.R` | Figures 2-7 and graphical abstract (vector PDF) |
+| `06_publication_figures.R` | Multi-panel Figures 2-7 and the graphical-abstract map panels (vector PDF) |
 | `07_manuscript_values.R` | `values.tex`, Supplementary Tables S1-S3, consistency report |
-| `00_documentation/` | ADM2 display names, optional environment overrides, Figure 1 source |
+| `00_documentation/` | ADM2 display names, optional environment overrides, sources for Figure 1 and the graphical abstract |
 | `01_raw/boundaries/` | geoBoundaries ADM1/ADM2 files used in the paper (pinned) |
 | `03_processed/`, `05_logs/`, `06_tables/`, `07_manuscript/` | Outputs of the run archived with each release |
-| `legacy/` | Earlier exploratory regional (ADM1) analysis. Not used in the paper |
+| `07_manuscript/as_submitted/` | The single-panel figure files and graphical abstract used in the submitted manuscript, with a table linking each to its pipeline output |
+
+Earlier exploratory material (regional ADM1 notebooks and spreadsheets) was removed from the current version; it remains available in the repository history.
 
 ## How to run
 

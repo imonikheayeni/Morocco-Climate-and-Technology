@@ -1,0 +1,4 @@
+measure,method,statistic,df,p_value
+climate_exposure_score,Kruskal-Wallis rank sum test,22.730192293691722,2,1.159315005415682e-5
+technology_gap_score,Kruskal-Wallis rank sum test,56.38340257059764,2,5.708206770389429e-13
+ctvi_score,Kruskal-Wallis rank sum test,30.94872989961533,2,1.9035692968658862e-7

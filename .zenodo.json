@@ -1,15 +1,39 @@
 {
-  "title": "Code and derived data for: Mapping Climate-Technology Vulnerability across Morocco: An Open-Data Provincial Index, Spatial Typologies, and Urban-Rural Inequalities",
+  "title": "Code and derived data for: Mapping Climate-Technology Vulnerability across Morocco",
   "upload_type": "software",
-  "description": "R pipeline, pinned administrative boundaries, derived ADM2 indicator and result tables, logs, supplementary tables and figure code for an open-data Climate-Technology Vulnerability Index (CTVI) covering Morocco's 75 provinces and prefectures. Raw inputs (NASA POWER, WorldPop, OpenStreetMap via Geofabrik) are downloaded by the scripts. Funded by the British Council Going Global Partnerships - Research Environments programme (grant RE2025-942).",
+  "description": "R pipeline, pinned administrative boundaries, derived ADM2 indicator and result tables, logs, supplementary tables and figure code for an open-data Climate-Technology Vulnerability Index (CTVI) covering Morocco's 75 provinces and prefectures, accompanying the manuscript 'Mapping Climate-Technology Vulnerability across Morocco: An Open-Data Provincial Index, Spatial Typologies, and Urban-Rural Inequalities' (submitted to City and Environment Interactions). Raw inputs (NASA POWER, WorldPop, OpenStreetMap via Geofabrik) are downloaded by the scripts. OpenStreetMap-derived values are (c) OpenStreetMap contributors and available under the Open Database License. Map boundaries are used for analysis only and do not necessarily depict accepted national boundaries. Funded by the British Council Going Global Partnerships - Research Environments programme (grant RE2025-942).",
   "creators": [
-    {"name": "Ayeni, Imonikhe", "affiliation": "Cardiff School of Technologies, Cardiff Metropolitan University"},
-    {"name": "Namwila, Mwaka", "affiliation": "Cardiff School of Technologies, Cardiff Metropolitan University"},
-    {"name": "Iraqi, Youssef", "affiliation": "College of Computing, Mohammed VI Polytechnic University (UM6P)"},
-    {"name": "Damaj, Issam", "affiliation": "Cardiff School of Technologies, Cardiff Metropolitan University"}
+    {
+      "name": "Ayeni, Imonikhe",
+      "affiliation": "Cardiff School of Technologies, Cardiff Metropolitan University",
+      "orcid": "0009-0001-0973-7071"
+    },
+    {
+      "name": "Namwila, Mwaka",
+      "affiliation": "Cardiff School of Technologies, Cardiff Metropolitan University"
+    },
+    {
+      "name": "Iraqi, Youssef",
+      "affiliation": "College of Computing, Mohammed VI Polytechnic University (UM6P)",
+      "orcid": "0000-0003-0112-2600"
+    },
+    {
+      "name": "Damaj, Issam",
+      "affiliation": "Cardiff School of Technologies, Cardiff Metropolitan University",
+      "orcid": "0000-0001-7855-3535"
+    }
   ],
   "license": "MIT",
   "version": "1.0.0",
   "language": "eng",
-  "keywords": ["climate vulnerability", "composite indicators", "Morocco", "open geospatial data", "peri-urban", "spatial statistics"]
+  "keywords": [
+    "climate vulnerability",
+    "composite indicators",
+    "Morocco",
+    "open geospatial data",
+    "peri-urban",
+    "spatial statistics",
+    "OpenStreetMap",
+    "R"
+  ]
 }

@@ -1,0 +1,8 @@
+insight_id,comparative_insight,reporting_note
+ENV_CTVI,Rural / lower-density had the highest mean CTVI (0.785).,Compare with Kruskal-Wallis and pairwise results before describing the difference as statistically significant.
+ENV_CLIMATE,Rural / lower-density had the highest mean climate-exposure score (0.576).,Environment classes are analytical and must be reviewed against official settlement data.
+ENV_TECH_GAP,Rural / lower-density had the highest mean technology-gap score (0.994).,"The technology gap currently represents OSM-derived service/access proxies, not direct broadband coverage."
+ENV_CRITICAL_SHARE,Rural / lower-density had the largest share of Critical vulnerability areas (80%).,"Percentages describe ADM2 units, not the percentage of Morocco's population."
+TYPOLOGY_CTVI,The Critical vulnerability typology had the highest mean CTVI (0.81).,Typology thresholds are sample-relative medians.
+TOP_ADM2,The five highest-ranked ADM2 areas were: Province d'Aousserd إقليم أوسرد; Oued Ed-Dahab Province; Province d'Errachidia إقليم الرشيدية; Assa-Zag Province; Tata Province.,Ranks are relative to the included ADM2 units and selected indicators.
+SPATIAL_CLUSTERING,"After Benjamini-Hochberg adjustment, 12 ADM2 areas were Gi* hot spots and 0 were LISA High-High clusters.",Local significance uses FDR-adjusted p-values under queen contiguity.

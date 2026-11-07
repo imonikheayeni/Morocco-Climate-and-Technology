@@ -1,0 +1,4 @@
+variant,variant_id,spearman_rho,top10_retained,max_abs_rank_change,typology_agreement_n,units
+PCA (first component),pca,0.9870554765291606,10,17,,75
+Robust scaling (5th-95th percentile),robust,0.9355049786628732,10,40,73,75
+Log-transformed access densities,log_access,0.9261166429587482,9,26,71,75

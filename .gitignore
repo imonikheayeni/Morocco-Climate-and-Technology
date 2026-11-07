@@ -23,3 +23,6 @@
 *.synctex.gz
 *.fls
 *.fdb_latexmk
+
+# Office lock files
+~$*

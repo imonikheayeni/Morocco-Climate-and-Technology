@@ -1,0 +1,4 @@
+kmeans_cluster,data_driven_typology,n,climate_exposure_mean,technology_gap_mean,ctvi_mean
+3,Lower data-driven vulnerability,3,0.2942008896234205,0.1818061308622216,0.23800351024282107
+2,Moderate data-driven vulnerability,42,0.3075890699222062,0.9656899172785371,0.6366394936003716
+1,Higher data-driven vulnerability,30,0.6375934468711748,0.9839463562511147,0.8107699015611448

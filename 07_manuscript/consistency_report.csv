@@ -1,0 +1,79 @@
+check,location,expected_text,observed_text,status
+Units,Throughout,75,75.000,PASS
+Critical vulnerability n,"Sec 4.3, Table 3, abstract",27,27.000,PASS
+Climate-exposed adaptive potential n,"Sec 4.3, Table 3",11,11.000,PASS
+Technology/service development gap n,"Sec 4.3, Table 3, abstract",11,11.000,PASS
+Relative resilience n,"Sec 4.3, Table 3",26,26.000,PASS
+Critical CE mean,Table 3,0.626,0.626,PASS
+Critical TG mean,Table 3,0.994,0.994,PASS
+Critical CTVI mean,Table 3,0.81,0.810,PASS
+Climate-exposed CE mean,Table 3,0.512,0.512,PASS
+Climate-exposed TG mean,Table 3,0.958,0.958,PASS
+Climate-exposed TG SD,Table 3,0.039,0.039,PASS
+Tech gap CE mean,Table 3,0.268,0.268,PASS
+Tech gap TG mean,Table 3,0.989,0.989,PASS
+Relative resilience CE mean,Table 3,0.286,0.286,PASS
+Relative resilience TG mean,Table 3,0.86,0.860,PASS
+Relative resilience TG SD,Table 3,0.254,0.254,PASS
+Urban core n,"Sec 3.6, Table 4",11,11.000,PASS
+Peri-urban n,"Sec 3.6, Table 4",34,34.000,PASS
+Rural n,"Sec 3.6, Table 4",30,30.000,PASS
+Urban core CE mean,"Table 4, Sec 4.4, 5.2",0.314,0.314,PASS
+Peri-urban CE mean,"Table 4, Sec 4.4, 5.2",0.359,0.359,PASS
+Rural CE mean,Table 4,0.576,0.576,PASS
+Urban core TG mean,"Table 4, Sec 5.2",0.705,0.705,PASS
+Peri-urban TG mean,"Table 4, Sec 5.2",0.972,0.972,PASS
+Rural TG mean,Table 4,0.994,0.994,PASS
+Urban core CTVI mean,"Table 4, abstract",0.51,0.510,PASS
+Peri-urban CTVI mean,"Table 4, abstract",0.665,0.665,PASS
+Rural CTVI mean,"Table 4, abstract",0.785,0.785,PASS
+Urban core CTVI median,Table 4,0.561,0.561,PASS
+Peri-urban CTVI median,Table 4,0.655,0.655,PASS
+Rural CTVI median,Table 4,0.778,0.778,PASS
+Urban core TG SD,Table 4,0.34,0.340,PASS
+"Kruskal-Wallis H, CE",Sec 4.4,22.73,22.730,PASS
+"Kruskal-Wallis H, TG",Sec 4.4,56.38,56.383,PASS
+"Kruskal-Wallis H, CTVI","Sec 4.4, abstract",30.95,30.949,PASS
+CE rural vs peri r,Sec 4.4,0.622,0.622,PASS
+CE rural vs core r,Sec 4.4,0.691,0.691,PASS
+CE rural vs core adjusted p,Sec 4.4,0.001,0.001,PASS
+CE peri vs core adjusted p,"Sec 4.4, 5.2",0.157,0.157,PASS
+TG rural vs core r,Sec 4.4,1,1.000,PASS
+CTVI peri vs core adjusted p,"Sec 4.4, 5.2",0.006,0.006,PASS
+CTVI peri vs core r,Sec 4.4,0.556,0.556,PASS
+Urban core: Relative resilience n,Sec 4.4,9,9.000,PASS
+Urban core: Climate-exposed n,Sec 4.4,2,2.000,PASS
+Peri-urban: Relative resilience n,Sec 4.4,17,17.000,PASS
+Peri-urban: Climate-exposed n,Sec 4.4,8,8.000,PASS
+Peri-urban: Tech gap n,Sec 4.4,6,6.000,PASS
+Peri-urban: Critical n,Sec 4.4,3,3.000,PASS
+Rural: Critical n,"Sec 4.4, abstract, highlights",24,24.000,PASS
+Rural: Tech gap n,Sec 4.4,5,5.000,PASS
+CTVI minimum,Sec 4.1,0.182,0.182,PASS
+CTVI maximum,Sec 4.1,1,1.000,PASS
+CE top quintile lower bound,Sec 4.2,0.576,0.576,PASS
+TG minimum,Sec 4.2,0.093,0.093,PASS
+TG lowest quintile upper bound,Sec 4.2,0.961,0.961,PASS
+Gi* hot spots,"Sec 4.5, abstract, highlights",12,12.000,PASS
+Gi* hot spots at adj. p <= 0.05,Sec 4.5,6,6.000,PASS
+Gi* cold spots,Sec 4.5,6,6.000,PASS
+Gi* cold spots at adj. p <= 0.05,Sec 4.5,4,4.000,PASS
+Local Moran significant (BH 0.05),Sec 4.5,0,0.000,PASS
+"Spearman rho, PCA","Sec 4.7, abstract",0.987,0.987,PASS
+"Spearman rho, robust","Sec 4.7, abstract",0.936,0.936,PASS
+"Top-10 retained, PCA",Sec 4.7,10,10.000,PASS
+"Top-10 retained, robust",Sec 4.7,10,10.000,PASS
+k-means k,Sec 4.7,3,3.000,PASS
+k-means smallest cluster n,Sec 4.7,3,3.000,PASS
+k-means largest cluster n,Sec 4.7,42,42.000,PASS
+Random Forest OOB R2,Sec 4.7,0.938,0.941,CHECK
+Top five CTVI units,Sec 4.1,Aousserd; Assa-Zag; Errachidia; Oued Ed-Dahab; Tata,Aousserd; Assa-Zag; Errachidia; Oued Ed-Dahab; Tata,PASS
+Gi* hot spot units,Sec 4.5,Aousserd; Assa-Zag; Boujdour; Errachidia; Es-Semara; Guelmim; Laayoune; Oued Ed-Dahab; Tarfaya; Taroudant; Tata; Zagora,Aousserd; Assa-Zag; Boujdour; Errachidia; Es-Semara; Guelmim; Laayoune; Oued Ed-Dahab; Tarfaya; Taroudant; Tata; Zagora,PASS
+Gi* cold spot units,Sec 4.5,Casablanca; Mediouna; Mohammedia; Nouaceur; Rabat; Tétouan,Casablanca; Mediouna; Mohammedia; Nouaceur; Rabat; Tétouan,PASS
+Zagora is a hot spot at adj. p <= 0.05,Sec 5.1,Zagora,Zagora,PASS
+Random Forest importance order,Sec 4.7,1 precipitation_total_mm_5yr; 2 dry_days_lt_1mm_5yr; 3 heat_days_gt_35c_5yr,1 precipitation_total_mm_5yr; 2 dry_days_lt_1mm_5yr; 3 heat_days_gt_35c_5yr,PASS
+New-analysis narrative: fringe contrast reproduced under contiguity,"Sec 4.4, 5.2",TRUE,TRUE,PASS
+No population flags after combining rasters,"Sec 3.3, 4.6",0,0,PASS
+Access densities strongly right-skewed (skewness > 1),"Sec 3.3, 4.2",TRUE,TRUE,PASS
+Name anchors: 8 urban-core and 7 peri-urban,Sec 3.6,8 urban-core; 7 peri-urban,8 urban-core; 7 peri-urban,PASS
+Peri-urban units assigned by the density band,Sec 3.6,27,27,PASS

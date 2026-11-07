@@ -8,15 +8,18 @@ authors:
   - family-names: Ayeni
     given-names: Imonikhe
     affiliation: "Cardiff School of Technologies, Cardiff Metropolitan University"
+    orcid: "https://orcid.org/0009-0001-0973-7071"
   - family-names: Namwila
     given-names: Mwaka
     affiliation: "Cardiff School of Technologies, Cardiff Metropolitan University"
   - family-names: Iraqi
     given-names: Youssef
     affiliation: "College of Computing, Mohammed VI Polytechnic University (UM6P)"
+    orcid: "https://orcid.org/0000-0003-0112-2600"
   - family-names: Damaj
     given-names: Issam
     affiliation: "Cardiff School of Technologies, Cardiff Metropolitan University"
+    orcid: "https://orcid.org/0000-0001-7855-3535"
 keywords:
   - climate vulnerability
   - composite indicators

@@ -1,0 +1,4 @@
+variable,domain,available,non_missing_n,missing_pct,unique_n,sd,usable
+osm_road_km_per_100km2,technology,TRUE,75,0,75,251.86770920073414,TRUE
+osm_poi_count_per_100km2,technology,TRUE,75,0,75,472.39570182423506,TRUE
+osm_health_education_poi_per_100km2,technology,TRUE,75,0,75,61.03936071236401,TRUE

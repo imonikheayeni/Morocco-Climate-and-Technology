@@ -1,0 +1,6 @@
+primary_environment,environment_geographic,n
+Rural / lower-density,Adjacent to an urban core,4
+Rural / lower-density,Not adjacent to an urban core,26
+Smart city / urban core,Urban core,11
+Urban edge / peri-urban,Adjacent to an urban core,18
+Urban edge / peri-urban,Not adjacent to an urban core,16

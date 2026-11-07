@@ -1,0 +1,8 @@
+variable,domain,available,non_missing_n,missing_pct,unique_n,sd,usable
+heat_days_gt_35c_5yr,climate,TRUE,75,0,57,40.427390233368776,TRUE
+dry_days_lt_1mm_5yr,climate,TRUE,75,0,57,19.10166937660091,TRUE
+precipitation_total_mm_5yr,climate,TRUE,75,0,61,154.88407382579706,TRUE
+temp_max_mean_c_5yr,climate,TRUE,75,0,61,2.733014608040658,TRUE
+osm_road_km_per_100km2,technology,TRUE,75,0,75,251.86770920073414,TRUE
+osm_poi_count_per_100km2,technology,TRUE,75,0,75,472.39570182423506,TRUE
+osm_health_education_poi_per_100km2,technology,TRUE,75,0,75,61.03936071236401,TRUE

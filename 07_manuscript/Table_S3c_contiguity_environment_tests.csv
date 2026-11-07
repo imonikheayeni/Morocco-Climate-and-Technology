@@ -1,0 +1,10 @@
+measure,comparison,p_adjusted,rank_biserial_r
+Climate exposure,Adjacent to an urban core vs urban core,0.113,0.388
+Climate exposure,Not adjacent to an urban core vs urban core,0.0246,0.524
+Climate exposure,Not adjacent to an urban core vs adjacent to an urban core,0.249,0.177
+Access gap,Adjacent to an urban core vs urban core,5.13e-5,0.901
+Access gap,Not adjacent to an urban core vs urban core,1.62e-6,0.991
+Access gap,Not adjacent to an urban core vs adjacent to an urban core,0.00232,0.468
+CTVI,Adjacent to an urban core vs urban core,0.00666,0.62
+CTVI,Not adjacent to an urban core vs urban core,5.53e-4,0.74
+CTVI,Not adjacent to an urban core vs adjacent to an urban core,0.186,0.203
